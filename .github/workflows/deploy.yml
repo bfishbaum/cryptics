@@ -3,8 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths:
+      - 'frontend/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -31,7 +32,7 @@ jobs:
         cd frontend
         npm run build
       env:
-        VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://placeholder-api.example.com/api' }}
     
     - name: Setup Pages
       uses: actions/configure-pages@v3
