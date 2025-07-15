@@ -1,0 +1,19 @@
+{
+  "name": "cryptics",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "dev:api": "cd api && npm start",
+    "build": "cd frontend && npm run build",
+    "build:api": "cd api && npm run build",
+    "lint": "cd frontend && npm run lint",
+    "preview": "cd frontend && npm run preview",
+    "test": "cd frontend && npm run test",
+    "test:run": "cd frontend && npm run test:run",
+    "test:coverage": "cd frontend && npm run test:coverage",
+    "install-frontend": "cd frontend && npm install",
+    "install-api": "cd api && npm install",
+    "install-all": "npm run install-frontend && npm run install-api"
+  }
+}
