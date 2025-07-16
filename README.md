@@ -103,11 +103,13 @@ CREATE TABLE cryptograms (
      - `DB_USER`: your-username
      - `DB_PASSWORD`: your-password
 
-3. **Configure GitHub Secrets:**
-   - `VITE_API_URL`: Your Azure Function App URL (e.g., `https://your-function-app.azurewebsites.net/api`)
-   - `VITE_ADMIN_PASSWORD`: Secure password for admin panel access
-   - `AZURE_FUNCTIONAPP_NAME`: Your Azure Function App name
-   - `AZURE_FUNCTIONAPP_PUBLISH_PROFILE`: Download from Azure Portal
+3. **Configure GitHub Environment and Secrets:**
+   - Create `github-pages` environment in **Settings > Environments**
+   - Add environment secrets:
+     - `VITE_API_URL`: Your Azure Function App URL (e.g., `https://your-function-app.azurewebsites.net/api`)
+     - `VITE_ADMIN_PASSWORD`: Secure password for admin panel access
+     - `AZURE_FUNCTIONAPP_NAME`: Your Azure Function App name
+     - `AZURE_FUNCTIONAPP_PUBLISH_PROFILE`: Download from Azure Portal
 
 4. **Deploy:**
    - Push to main branch triggers automatic deployment
@@ -127,7 +129,7 @@ The application implements secure configuration practices:
 
 ### Setting GitHub Secrets
 
-In your repository, go to **Settings > Secrets and Variables > Actions** and add:
+In your repository, go to **Settings > Environments** and create a `github-pages` environment, then add secrets:
 
 ```
 VITE_API_URL=https://your-function-app.azurewebsites.net/api

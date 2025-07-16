@@ -33,16 +33,6 @@ jobs:
         cd api
         npm run build
     
-    - name: Debug Secrets
-      run: |
-        echo "App name length: ${#AZURE_FUNCTIONAPP_NAME}"
-        echo "App name set: $([[ -n "$AZURE_FUNCTIONAPP_NAME" ]] && echo "YES" || echo "NO")"
-        echo "Publish profile length: ${#AZURE_FUNCTIONAPP_PUBLISH_PROFILE}"
-        echo "Publish profile set: $([[ -n "$AZURE_FUNCTIONAPP_PUBLISH_PROFILE" ]] && echo "YES" || echo "NO")"
-      env:
-        AZURE_FUNCTIONAPP_NAME: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
-        AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-    
     - name: Deploy to Azure Functions
       uses: Azure/functions-action@v1
       with:

@@ -1,6 +1,6 @@
 import type { Cryptogram, CryptogramInput } from '../types/cryptogram';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:7071/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export class DatabaseService {
   static async getAllCryptograms(): Promise<Cryptogram[]> {
