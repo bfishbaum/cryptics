@@ -8,7 +8,6 @@
     "watch": "tsc --watch",
     "prestart": "npm run build",
     "start": "func start",
-    "test": "jest"
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
