@@ -74,7 +74,7 @@ export const SubmissionPage: React.FC = () => {
         date_added: new Date(formData.date_added)
       });
 
-      setSuccessMessage('Cryptogram submitted successfully!');
+      setSuccessMessage('Cryptic submitted successfully!');
       setFormData({
         puzzle: '',
         solution: '',
@@ -139,7 +139,7 @@ export const SubmissionPage: React.FC = () => {
   return (
     <div className="container">
       <div className="white-box">
-        <h1 className="page-title">Submit New Cryptogram</h1>
+        <h1 className="page-title">Submit New Cryptic</h1>
         
         {successMessage && (
           <div style={{ 
