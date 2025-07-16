@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cryptics - Page Not Found</title>
+    <script type="text/javascript">
+        // Single Page Apps for GitHub Pages
+        // https://github.com/rafrex/spa-github-pages
+        // This script takes the current url and converts the path and query
+        // string into just a query string, and then redirects the browser
+        // to the new url with only a query string and hash fragment,
+        // e.g. https://www.foo.tld/one/two?a=b&c=d#qwe, becomes
+        // https://www.foo.tld/?/one/two&a=b~and~c=d#qwe
+        // Notice: this 404.html file must be at least 512 bytes for it to work
+        // with Internet Explorer (it is currently > 512 bytes)
+
+        var pathSegmentsToKeep = 1;
+
+        var l = window.location;
+        l.replace(
+            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+            l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+        );
+    </script>
+</head>
+<body>
+    <noscript>
+        <p>This page requires JavaScript to work properly. Please enable JavaScript and reload the page.</p>
+        <p><a href="/cryptics/">Go to Cryptics home page</a></p>
+    </noscript>
+</body>
+</html>

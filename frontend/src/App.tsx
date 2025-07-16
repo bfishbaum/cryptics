@@ -7,8 +7,10 @@ import { SubmissionPage } from './pages/SubmissionPage';
 import './styles/globals.css';
 
 function App() {
+  const basename = import.meta.env.MODE === 'production' ? '/cryptics' : '';
+  
   return (
-    <Router>
+    <Router basename={basename}>
       <div className="App">
         <Header />
         <main className="main-content">
