@@ -17,7 +17,7 @@ export const SubmissionPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const ADMIN_PASSWORD = 'admin123'; // In production, this should be environment variable
+  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();

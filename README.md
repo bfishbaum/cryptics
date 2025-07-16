@@ -47,7 +47,7 @@ A dynamic cryptogram puzzle website built with React + TypeScript + Vite, featur
 
 - **Interactive Cryptogram Game**: Click-to-focus input boxes with keyboard navigation
 - **Smart Answer Checking**: Ignores spaces and hyphens in user input for seamless gameplay
-- **Admin Panel**: Password-protected puzzle submission (password: "admin123")
+- **Secure Admin Panel**: Password-protected puzzle submission using GitHub secrets
 - **Archive System**: Paginated puzzle history with date sorting
 - **Responsive Design**: Clean white minimalistic interface
 - **Comprehensive Testing**: 43 test cases ensuring functionality works correctly
@@ -105,6 +105,7 @@ CREATE TABLE cryptograms (
 
 3. **Configure GitHub Secrets:**
    - `VITE_API_URL`: Your Azure Function App URL (e.g., `https://your-function-app.azurewebsites.net/api`)
+   - `VITE_ADMIN_PASSWORD`: Secure password for admin panel access
    - `AZURE_FUNCTIONAPP_NAME`: Your Azure Function App name
    - `AZURE_FUNCTIONAPP_PUBLISH_PROFILE`: Download from Azure Portal
 
@@ -114,6 +115,26 @@ CREATE TABLE cryptograms (
    - API deploys to Azure Functions
 
 **Cost**: ~$6-18/month for 10k requests
+
+## Security
+
+The application implements secure configuration practices:
+
+- **Environment Variables**: All sensitive data stored in environment variables
+- **GitHub Secrets**: Admin password and API URLs configured as repository secrets
+- **No Hardcoded Secrets**: Default values only for development fallback
+- **CORS Configuration**: API properly configured for cross-origin requests
+
+### Setting GitHub Secrets
+
+In your repository, go to **Settings > Secrets and Variables > Actions** and add:
+
+```
+VITE_API_URL=https://your-function-app.azurewebsites.net/api
+VITE_ADMIN_PASSWORD=your-secure-password-here
+AZURE_FUNCTIONAPP_NAME=your-function-app-name
+AZURE_FUNCTIONAPP_PUBLISH_PROFILE=<download-from-azure-portal>
+```
 
 ## Tech Stack
 

@@ -33,6 +33,7 @@ jobs:
         npm run build
       env:
         VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://placeholder-api.example.com/api' }}
+        VITE_ADMIN_PASSWORD: ${{ secrets.VITE_ADMIN_PASSWORD || 'admin123' }}
     
     - name: Setup Pages
       uses: actions/configure-pages@v4
