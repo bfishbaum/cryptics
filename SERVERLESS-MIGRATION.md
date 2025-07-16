@@ -63,6 +63,7 @@ VITE_API_URL=https://your-function-app.azurewebsites.net/api
 
 ### GitHub Secrets
 - `VITE_API_URL`: Your Azure Function App URL
+- `VITE_ADMIN_PASSWORD`: Secure admin panel password
 - `AZURE_FUNCTIONAPP_NAME`: Your Function App name
 - `AZURE_FUNCTIONAPP_PUBLISH_PROFILE`: Download from Azure Portal
 
