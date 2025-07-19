@@ -25,7 +25,11 @@ export async function getCryptograms(request: HttpRequest, context: InvocationCo
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ error: 'Internal server error' })
+            body: JSON.stringify({ 
+                error: 'Internal server error',
+                details: error instanceof Error ? error.message : String(error),
+                stack: error instanceof Error ? error.stack : undefined
+            })
         };
     }
 }

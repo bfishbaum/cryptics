@@ -35,7 +35,11 @@ export async function getLatestCryptogram(request: HttpRequest, context: Invocat
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ error: 'Internal server error' })
+            body: JSON.stringify({ 
+                error: 'Internal server error',
+                details: error instanceof Error ? error.message : String(error),
+                stack: error instanceof Error ? error.stack : undefined
+            })
         };
     }
 }
