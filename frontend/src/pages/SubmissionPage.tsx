@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DatabaseService } from '../services/database';
 import { Source } from '../types/cryptogram';
 import { validateSolution } from '../utils/validation';
+import CryptoJS from 'crypto-js';
 
 export const SubmissionPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -16,12 +17,19 @@ export const SubmissionPage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [deleteId, setDeleteId] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
 
   const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    
+    // Hash the entered password using SHA-256
+    const hashedPassword = CryptoJS.SHA256(password).toString();
+    
+    if (hashedPassword === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       setPassword('');
     } else {
@@ -102,6 +110,35 @@ export const SubmissionPage: React.FC = () => {
         ...prev,
         [field]: ''
       }));
+    }
+  };
+
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const id = parseInt(deleteId);
+    if (isNaN(id) || id <= 0) {
+      setErrors({ deleteId: 'Please enter a valid ID number' });
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete cryptogram with ID ${id}? This action cannot be undone.`)) {
+      return;
+    }
+
+    setIsDeleting(true);
+    setDeleteSuccessMessage('');
+    setErrors(prev => ({ ...prev, deleteId: '', deleteSubmit: '' }));
+
+    try {
+      await DatabaseService.deleteCryptogram(id);
+      setDeleteSuccessMessage(`Cryptogram with ID ${id} deleted successfully!`);
+      setDeleteId('');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete cryptogram';
+      setErrors(prev => ({ ...prev, deleteSubmit: errorMessage }));
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -255,6 +292,71 @@ export const SubmissionPage: React.FC = () => {
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Submitting...' : 'Submit Cryptogram'}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Delete Section */}
+      <div className="white-box" style={{ marginTop: '40px' }}>
+        <h2 className="page-title" style={{ fontSize: '24px', marginBottom: '20px' }}>Delete Cryptogram</h2>
+        
+        {deleteSuccessMessage && (
+          <div style={{ 
+            background: '#d4edda', 
+            color: '#155724', 
+            padding: '15px', 
+            borderRadius: '6px', 
+            marginBottom: '20px',
+            border: '1px solid #c3e6cb'
+          }}>
+            {deleteSuccessMessage}
+          </div>
+        )}
+
+        <form onSubmit={handleDelete} style={{ maxWidth: '400px', margin: '0 auto' }}>
+          <div className="form-group">
+            <label htmlFor="deleteId" className="form-label">
+              Cryptogram ID *
+            </label>
+            <input
+              type="number"
+              id="deleteId"
+              className="form-input"
+              value={deleteId}
+              onChange={(e) => {
+                setDeleteId(e.target.value);
+                if (errors.deleteId) {
+                  setErrors(prev => ({ ...prev, deleteId: '' }));
+                }
+              }}
+              placeholder="Enter ID of cryptogram to delete"
+              min="1"
+              required
+            />
+            {errors.deleteId && (
+              <div className="error-message">{errors.deleteId}</div>
+            )}
+          </div>
+
+          {errors.deleteSubmit && (
+            <div className="error-message" style={{ textAlign: 'center', marginBottom: '20px' }}>
+              {errors.deleteSubmit}
+            </div>
+          )}
+
+          <div style={{ textAlign: 'center' }}>
+            <button 
+              type="submit" 
+              className="btn"
+              style={{ 
+                backgroundColor: '#dc3545', 
+                color: 'white',
+                border: '1px solid #dc3545'
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Cryptogram'}
             </button>
           </div>
         </form>

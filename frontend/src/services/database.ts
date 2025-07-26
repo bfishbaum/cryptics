@@ -74,4 +74,16 @@ export class DatabaseService {
       date_added: new Date(data.date_added)
     };
   }
+
+  static async deleteCryptogram(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/cryptograms/${id}`, {
+      method: 'DELETE',
+    });
+    if (response.status === 404) {
+      throw new Error('Cryptogram not found');
+    }
+    if (!response.ok) {
+      throw new Error('Failed to delete cryptogram');
+    }
+  }
 }
