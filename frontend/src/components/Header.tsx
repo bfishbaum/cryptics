@@ -14,6 +14,7 @@ export const Header: React.FC = () => {
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/archive" className="nav-link">Archive</Link>
           <Link to="/submit" className="nav-link">Submit</Link>
+          <Link to="/privacy" className="nav-link">Privacy</Link>
         </nav>
       </div>
     </header>

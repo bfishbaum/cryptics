@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { DatabaseService } from '../services/database';
 import type { Cryptogram } from '../types/cryptogram';
+import { isPuzzleCompleted } from '../utils/puzzleProgress';
 
 export const ArchivePage: React.FC = () => {
   const [cryptograms, setCryptograms] = useState<Cryptogram[]>([]);
@@ -81,26 +82,29 @@ export const ArchivePage: React.FC = () => {
           </p>
         ) : (
           <>
-            <div className="archive-grid">
+            <div className="archive-list">
               {cryptograms.map((cryptogram) => (
                 <Link
                   key={cryptogram.id}
                   to={`/puzzle/${cryptogram.id}`}
-                  className="archive-item"
+                  className="archive-row"
                 >
-                  <div className="archive-date">
-                    {formatDate(cryptogram.date_added)}
+                  <div className="archive-row-content">
+                    <div className="archive-row-date">
+                      {formatDate(cryptogram.date_added)}
+                    </div>
+                    <div className="archive-row-difficulty">
+                      Difficulty: {cryptogram.difficulty}/5
+                    </div>
+                    <div className="archive-row-status">
+                      {isPuzzleCompleted(cryptogram.id) && (
+                        <span className="completion-check">✓</span>
+                      )}
+                    </div>
                   </div>
-                  <div className="archive-preview">
-                    {cryptogram.puzzle.substring(0, 50)}
-                    {cryptogram.puzzle.length > 50 ? '...' : ''}
-                  </div>
-                  <div style={{ 
-                    fontSize: '12px', 
-                    color: '#6c757d', 
-                    marginTop: '10px' 
-                  }}>
-                    Difficulty: {cryptogram.difficulty}/5
+                  <div className="archive-row-preview">
+                    {cryptogram.puzzle.substring(0, 80)}
+                    {cryptogram.puzzle.length > 80 ? '...' : ''}
                   </div>
                 </Link>
               ))}

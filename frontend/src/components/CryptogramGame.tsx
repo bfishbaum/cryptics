@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import type { Cryptogram } from '../types/cryptogram';
 import { checkAnswer } from '../utils/answerCheck';
 import { getSolutionLengthPattern } from '../utils/solutionLength';
+import { savePuzzleProgress, getPuzzleProgress, markPuzzleCompleted, isPuzzleCompleted } from '../utils/puzzleProgress';
 
 interface CryptogramGameProps {
   cryptogram: Cryptogram;
@@ -16,7 +17,18 @@ export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram }) =>
 
   useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, cryptogram.solution.length);
-  }, [cryptogram.solution.length]);
+    
+    // Load saved progress if available
+    const savedProgress = getPuzzleProgress(cryptogram.id);
+    if (savedProgress && !isPuzzleCompleted(cryptogram.id)) {
+      setUserInput(savedProgress.userInput);
+    } else if (isPuzzleCompleted(cryptogram.id)) {
+      // If puzzle was completed, show the solution
+      setUserInput(cryptogram.solution.split(''));
+      setGameState('correct');
+      setShowExplanation(true);
+    }
+  }, [cryptogram.id, cryptogram.solution.length]);
 
   const handleInputChange = (index: number, value: string) => {
     if (value.length > 1) return;
@@ -25,6 +37,9 @@ export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram }) =>
     const newInput = [...userInput];
     newInput[index] = value.toLowerCase();
     setUserInput(newInput);
+
+    // Save progress automatically
+    savePuzzleProgress(cryptogram.id, newInput);
 
     if (value && index < cryptogram.solution.length - 1) {
       const nextIndex = findNextEditableIndex(index);
@@ -79,6 +94,8 @@ export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram }) =>
     if (checkAnswer(userInput, cryptogram.solution)) {
       setGameState('correct');
       setShowExplanation(true);
+      // Mark puzzle as completed
+      markPuzzleCompleted(cryptogram.id, userInput);
     } else {
       setGameState('incorrect');
       setTimeout(() => setGameState('playing'), 2000);

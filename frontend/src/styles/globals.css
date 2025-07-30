@@ -52,7 +52,7 @@ body {
   display: flex;
   justify-content: center;
   gap: 30px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .nav-link {
@@ -68,6 +68,41 @@ body {
 
 .nav-link:hover {
   border-color: #333;
+}
+
+/* Mobile responsive header navigation */
+@media (max-width: 768px) {
+  .nav-links {
+    gap: 20px;
+  }
+  
+  .nav-link {
+    font-size: 18px;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-links {
+    gap: 12px;
+  }
+  
+  .nav-link {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+  
+  .header {
+    padding: 20px 0;
+  }
+  
+  .header-content {
+    margin-bottom: 15px;
+  }
+  
+  .logo {
+    font-size: 28px;
+  }
 }
 
 .main-content {
@@ -200,24 +235,37 @@ body {
 .btn-danger {
   background-color: #dc3545;
   border-color: #dc3545;
-  color: white;
+  color: white !important;
 }
 
 .btn-danger:hover {
   background-color: #c82333;
   border-color: #c82333;
+  color: white !important;
 }
 
-.archive-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+.btn-danger:active, .btn-danger:focus {
+  background-color: #bd2130;
+  border-color: #bd2130;
+  color: white !important;
+}
+
+/* Override body text-align center for buttons */
+.btn-danger, .btn-danger:hover, .btn-danger:active, .btn-danger:focus, .btn-danger:visited {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+}
+
+.archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin-top: 30px;
   width: 100%;
-  justify-items: center;
+  max-width: 800px;
 }
 
-.archive-item {
+.archive-row {
   background-color: white;
   border: 2px solid #dee2e6;
   border-radius: 8px;
@@ -225,27 +273,95 @@ body {
   text-decoration: none;
   color: #333;
   transition: all 0.2s ease;
-  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+.archive-row:hover {
+  border-color: #007bff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.archive-row-content {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.archive-row-date {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  min-width: 150px;
+}
+
+.archive-row-difficulty {
+  font-size: 14px;
+  color: #6c757d;
+  flex: 1;
+  text-align: center;
+  min-width: 100px;
+}
+
+.archive-row-status {
+  flex: 0 0 40px;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
 }
 
-.archive-item:hover {
-  border-color: #007bff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.completion-check {
+  color: #28a745;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
 }
 
-.archive-date {
+.archive-row-preview {
   font-size: 14px;
   color: #6c757d;
-  margin-bottom: 10px;
+  line-height: 1.4;
+  text-align: left;
 }
 
-.archive-preview {
-  font-size: 16px;
-  font-weight: 500;
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .archive-row {
+    padding: 16px;
+  }
+  
+  .archive-row-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .archive-row-date {
+    min-width: auto;
+    text-align: left;
+  }
+  
+  .archive-row-difficulty {
+    min-width: auto;
+    text-align: left;
+  }
+  
+  .archive-row-status {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    flex: none;
+  }
+  
+  .archive-row {
+    position: relative;
+  }
 }
 
 .error-message {
@@ -263,4 +379,155 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Cookie Consent Styles */
+.cookie-consent-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 20px;
+}
+
+.cookie-consent-banner {
+  background-color: white;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.cookie-consent-content {
+  padding: 24px;
+}
+
+.cookie-consent-content h3 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.cookie-consent-content p {
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+  color: #666;
+}
+
+.cookie-consent-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.cookie-settings-btn {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #6c757d;
+}
+
+.cookie-settings-btn:hover {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+  color: #6c757d;
+}
+
+.cookie-preferences {
+  margin: 20px 0;
+}
+
+.cookie-category {
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+}
+
+.cookie-category-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cookie-category-header label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
+  width: 100%;
+}
+
+.cookie-category-header input[type="checkbox"] {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+}
+
+.cookie-category-title {
+  flex: 1;
+  color: #333;
+}
+
+.required-badge {
+  background-color: #dc3545;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.cookie-category-description {
+  margin: 0;
+  font-size: 14px;
+  color: #6c757d;
+  line-height: 1.4;
+  margin-left: 30px;
+}
+
+.cookie-consent-footer {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+  text-align: center;
+}
+
+.cookie-consent-link {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.cookie-consent-link:hover {
+  color: #0056b3;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .cookie-consent-overlay {
+    padding: 10px;
+  }
+  
+  .cookie-consent-content {
+    padding: 20px;
+  }
+  
+  .cookie-consent-buttons {
+    flex-direction: column;
+  }
+  
+  .cookie-consent-buttons .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
