@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { Cryptogram } from '../types/cryptogram';
 import { checkAnswer } from '../utils/answerCheck';
+import { getSolutionLengthPattern } from '../utils/solutionLength';
 
 interface CryptogramGameProps {
   cryptogram: Cryptogram;
@@ -123,6 +124,10 @@ export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram }) =>
       
       <div className="puzzle-text">
         {cryptogram.puzzle}
+      </div>
+      
+      <div className="solution-length">
+        {getSolutionLengthPattern(cryptogram.solution)}
       </div>
       
       <div className="game-controls">

@@ -14,15 +14,13 @@ function App() {
       <div className="App">
         <Header />
         <main className="main-content">
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/puzzle" element={<PuzzlePage />} />
-              <Route path="/puzzle/:id" element={<PuzzlePage />} />
-              <Route path="/archive" element={<ArchivePage />} />
-              <Route path="/submit" element={<SubmissionPage />} />
-            </Routes>
-          </div>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/puzzle" element={<PuzzlePage />} />
+            <Route path="/puzzle/:id" element={<PuzzlePage />} />
+            <Route path="/archive" element={<ArchivePage />} />
+            <Route path="/submit" element={<SubmissionPage />} />
+          </Routes>
         </main>
       </div>
     </Router>
