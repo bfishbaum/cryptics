@@ -12,7 +12,6 @@ const LogoutButton = () => {
 }
 
 export const Header: React.FC = () => {
-  const { isAuthenticated } = useAuth0();
 
   return (
     <header className="header">
