@@ -1,7 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth0 } from "@auth0/auth0-react";
+
+const LoginButton = () => {
+  const {  loginWithRedirect } = useAuth0();
+  return <button onClick={() => loginWithRedirect()} className='nav-link'>Log In</button>;
+}
+const LogoutButton = () => {
+  const {  logout } = useAuth0();
+  return <button onClick={() => logout()} className='nav-link'>Log Out</button>;
+}
 
 export const Header: React.FC = () => {
+  const { isAuthenticated } = useAuth0();
+
   return (
     <header className="header">
       <div className="container">
@@ -13,8 +25,10 @@ export const Header: React.FC = () => {
         <nav className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/archive" className="nav-link">Archive</Link>
-          <Link to="/submit" className="nav-link">Submit</Link>
           <Link to="/privacy" className="nav-link">Privacy</Link>
+          <Link to="/profile" className="nav-link">Profile</Link>
+          <LoginButton />
+          <LogoutButton />
         </nav>
       </div>
     </header>

@@ -30,7 +30,7 @@ export const MainPage: React.FC = () => {
   if (loading) {
     return (
       <div className="container">
-        <div className="loading">Loading today's cryptogram...</div>
+        <div className="loading">Loading today's cryptic crossword...</div>
       </div>
     );
   }
@@ -51,7 +51,7 @@ export const MainPage: React.FC = () => {
   return (
     <div className="container">
       <div className="white-box">
-        <h1 className="page-title">Today's Cryptogram</h1>
+        <h1 className="page-title">Today's Cryptic Crossword</h1>
         <CryptogramGame cryptogram={cryptogram} />
       </div>
     </div>

@@ -71,7 +71,7 @@ export const PuzzlePage: React.FC = () => {
     <div className="container">
       <div className="white-box">
         <h1 className="page-title">
-          {id ? `Cryptogram #${id}` : 'Latest Cryptogram'}
+          {id ? `Cryptic Crossword #${id}` : 'Latest Cryptic Crossword'}ogram
         </h1>
         <CryptogramGame cryptogram={cryptogram} />
       </div>
