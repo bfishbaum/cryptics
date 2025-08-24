@@ -4,19 +4,20 @@ import { DatabaseService } from '../services/database';
 import type { Cryptogram } from '../types/cryptogram';
 import { isPuzzleCompleted } from '../utils/puzzleProgress';
 
+// TODO: Implement better pagination (infinite scroll?)
+
 export const ArchivePage: React.FC = () => {
   const [cryptograms, setCryptograms] = useState<Cryptogram[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     const loadCryptograms = async () => {
       try {
         setLoading(true);
         const results = await DatabaseService.getLatestCryptograms(page, 20);
-        
+
         if (page === 1) {
           setCryptograms(results);
         } else {
@@ -34,7 +35,7 @@ export const ArchivePage: React.FC = () => {
   }, [page]);
 
   const loadMore = () => {
-    if (!loading && hasMore) {
+    if (!loading) {
       setPage(prev => prev + 1);
     }
   };
@@ -72,7 +73,7 @@ export const ArchivePage: React.FC = () => {
     <div className="container">
       <div className="white-box">
         <h1 className="page-title">Cryptogram Archive</h1>
-        
+
         {cryptograms.length === 0 ? (
           <p style={{ textAlign: 'center', color: '#6c757d' }}>
             No cryptograms found.
@@ -106,18 +107,16 @@ export const ArchivePage: React.FC = () => {
                 </Link>
               ))}
             </div>
-            
-            {hasMore && (
-              <div style={{ textAlign: 'center', marginTop: '30px' }}>
-                <button
-                  onClick={loadMore}
-                  disabled={loading}
-                  className="btn btn-primary"
-                >
-                  {loading ? 'Loading...' : 'Load More'}
-                </button>
-              </div>
-            )}
+
+            <div style={{ textAlign: 'center', marginTop: '30px' }}>
+              <button
+                onClick={loadMore}
+                disabled={loading}
+                className="btn btn-primary"
+              >
+                {loading ? 'Loading...' : 'Load More'}
+              </button>
+            </div>
           </>
         )}
       </div>

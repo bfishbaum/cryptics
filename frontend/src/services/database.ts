@@ -1,8 +1,6 @@
 import type { Cryptogram, CryptogramInput } from '../types/cryptogram';
-import { useAuth0 } from '@auth0/auth0-react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
-const AUTH0_AUDIENCE = import.meta.env.VITE_AUTH0_AUDIENCE || 'cryptic_api_id';
 
 export class DatabaseService {
 
