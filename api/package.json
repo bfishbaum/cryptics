@@ -7,6 +7,9 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js",
+    "init-db": "tsc && node dist/database/init.js",
+    "migrate": "tsc && node dist/migrations/run-migrations.js",
     "docker:build": "docker build -t cryptics-api .",
     "docker:build:prod": "docker build -t cryptics-api:latest .",
     "docker:up": "docker-compose up -d",
@@ -23,17 +26,26 @@
     "docker:clean": "docker-compose down -v && docker container prune -f && docker volume prune -f && docker image prune -f"
   },
   "dependencies": {
-    "express": "^4.18.0",
+    "@auth/core": "^0.40.0",
+    "@auth/express": "^0.11.0",
+    "@auth/pg-adapter": "^1.10.0",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.0",
-    "pg": "^8.11.0"
+    "express": "^4.18.0",
+    "express-oauth2-jwt-bearer": "^1.6.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.0",
+    "zod": "^4.0.14"
   },
   "devDependencies": {
-    "nodemon": "^3.0.0",
-    "typescript": "^5.8.3",
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.0",
     "@types/express": "^4.17.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.0.0",
-    "@types/pg": "^8.11.0"
+    "@types/pg": "^8.11.0",
+    "nodemon": "^3.0.0",
+    "typescript": "^5.8.3"
   }
 }
