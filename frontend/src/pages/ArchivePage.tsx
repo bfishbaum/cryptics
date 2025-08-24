@@ -22,9 +22,6 @@ export const ArchivePage: React.FC = () => {
         } else {
           setCryptograms(prev => [...prev, ...results]);
         }
-        
-        setHasMore(results.length === 20);
-        setError(null);
       } catch (err) {
         setError('Failed to load cryptograms');
         console.error('Error loading cryptograms:', err);

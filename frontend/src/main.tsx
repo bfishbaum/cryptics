@@ -10,8 +10,11 @@ createRoot(document.getElementById('root')!).render(
       domain='dev-l01xcafdoui0qywg.us.auth0.com'
       clientId='zidEswQhfP0z4dcYa57zXqeC0Kha7I3R'
         authorizationParams={{
-          redirect_uri: window.location.href,
+          redirect_uri: window.location.origin,
+          audience: 'cryptic_api_id',
         }}
+        useRefreshTokens={true}
+        cacheLocation="localstorage"
       >
     <App />
     </Auth0Provider>

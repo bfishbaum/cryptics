@@ -87,6 +87,8 @@ export function storeTokens(accessToken: string, refreshToken: string): void {
 
 /**
  * Get stored access token
+ * Note: This is kept for backward compatibility
+ * For Auth0 integration, use getAuth0AccessToken from auth0-token.ts
  */
 export function getAccessToken(): string | null {
   try {
@@ -95,6 +97,21 @@ export function getAccessToken(): string | null {
     console.error('Failed to get access token:', error);
     return null;
   }
+}
+
+/**
+ * Get access token from Auth0 or localStorage fallback
+ * This is a transitional function - prefer using Auth0 directly
+ */
+export async function getAccessTokenAsync(): Promise<string | null> {
+  // First try localStorage (existing tokens)
+  const storedToken = getAccessToken();
+  if (storedToken && !isTokenExpired(storedToken)) {
+    return storedToken;
+  }
+
+  // If no valid stored token, caller should use Auth0 directly
+  return null;
 }
 
 /**

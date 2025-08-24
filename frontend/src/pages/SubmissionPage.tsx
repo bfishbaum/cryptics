@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DatabaseService } from '../services/database';
 import { Source } from '../types/cryptogram';
 import { validateSolution } from '../utils/validation';
+import { useAuth0 } from '@auth0/auth0-react';
 import CryptoJS from 'crypto-js';
 
 export const SubmissionPage: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Use Auth0 API hook
   const [password, setPassword] = useState('');
+  const { isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
+
   const [formData, setFormData] = useState({
     puzzle: '',
     solution: '',
@@ -21,19 +24,37 @@ export const SubmissionPage: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
 
-  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+  // Helper function to get access token when needed
+  const getAccessToken = async (): Promise<string | null> => {
+    try {
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: 'cryptic_api_id',
+          scope: "delete:cryptic write:new_cryptic",
+        },
+        cacheMode: 'on', // Use cached token if available
+      });
+      return accessToken;
+    } catch (error) {
+      console.error('Error getting access token silently:', error);
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Hash the entered password using SHA-256
-    const hashedPassword = CryptoJS.SHA256(password).toString();
-    
-    if (hashedPassword === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      setPassword('');
-    } else {
-      setErrors({ password: 'Invalid password' });
+      // If silent token retrieval fails, try with popup
+      try {
+        const accessToken = await getAccessTokenWithPopup({
+          authorizationParams: {
+            audience: 'cryptic_api_id',
+            scope: "delete:cryptic write:new_cryptic",
+          },
+        });
+        if (!accessToken) {
+          console.error('Failed to get access token with popup');
+          return null;
+        }
+        return accessToken;
+      } catch (popupError) {
+        console.error('Error getting access token with popup:', popupError);
+        return null;
+      }
     }
   };
 
@@ -64,7 +85,7 @@ export const SubmissionPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -73,6 +94,15 @@ export const SubmissionPage: React.FC = () => {
     setSuccessMessage('');
 
     try {
+      // Get access token when we actually need it
+      const accessToken = await getAccessToken();
+
+      if (!accessToken) {
+        setErrors({ submit: 'Failed to get access token. Please try logging in again.' });
+        return;
+      }
+      console.log(accessToken);
+
       await DatabaseService.createCryptogram({
         puzzle: formData.puzzle,
         solution: formData.solution,
@@ -80,7 +110,7 @@ export const SubmissionPage: React.FC = () => {
         source: Source.OFFICIAL,
         difficulty: formData.difficulty,
         date_added: new Date(formData.date_added)
-      });
+      }, accessToken);
 
       setSuccessMessage('Cryptic submitted successfully!');
       setFormData({
@@ -103,7 +133,7 @@ export const SubmissionPage: React.FC = () => {
       ...prev,
       [field]: value
     }));
-    
+
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
@@ -115,7 +145,7 @@ export const SubmissionPage: React.FC = () => {
 
   const handleDelete = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const id = parseInt(deleteId);
     if (isNaN(id) || id <= 0) {
       setErrors({ deleteId: 'Please enter a valid ID number' });
@@ -131,7 +161,15 @@ export const SubmissionPage: React.FC = () => {
     setErrors(prev => ({ ...prev, deleteId: '', deleteSubmit: '' }));
 
     try {
-      await DatabaseService.deleteCryptogram(id);
+      // Get access token when we actually need it
+      const accessToken = await getAccessToken();
+
+      if (!accessToken) {
+        setErrors(prev => ({ ...prev, deleteSubmit: 'Failed to get access token. Please try logging in again.' }));
+        return;
+      }
+
+      await DatabaseService.deleteCryptogram(id, accessToken);
       setDeleteSuccessMessage(`Cryptogram with ID ${id} deleted successfully!`);
       setDeleteId('');
     } catch (error) {
@@ -142,48 +180,17 @@ export const SubmissionPage: React.FC = () => {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="container">
-        <div className="white-box">
-          <h1 className="page-title">Admin Access Required</h1>
-          <form onSubmit={handlePasswordSubmit} style={{ maxWidth: '400px', margin: '0 auto' }}>
-            <div className="form-group">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                className="form-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              {errors.password && (
-                <div className="error-message">{errors.password}</div>
-              )}
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Access Admin Panel
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="container">
       <div className="white-box">
         <h1 className="page-title">Submit New Cryptic</h1>
-        
+
         {successMessage && (
-          <div style={{ 
-            background: '#d4edda', 
-            color: '#155724', 
-            padding: '15px', 
-            borderRadius: '6px', 
+          <div style={{
+            background: '#d4edda',
+            color: '#155724',
+            padding: '15px',
+            borderRadius: '6px',
             marginBottom: '20px',
             border: '1px solid #c3e6cb'
           }}>
@@ -286,8 +293,8 @@ export const SubmissionPage: React.FC = () => {
           )}
 
           <div style={{ textAlign: 'center' }}>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn btn-primary"
               disabled={isSubmitting}
             >
@@ -300,13 +307,13 @@ export const SubmissionPage: React.FC = () => {
       {/* Delete Section */}
       <div className="white-box" style={{ marginTop: '40px' }}>
         <h2 className="page-title" style={{ fontSize: '24px', marginBottom: '20px' }}>Delete Cryptogram</h2>
-        
+
         {deleteSuccessMessage && (
-          <div style={{ 
-            background: '#d4edda', 
-            color: '#155724', 
-            padding: '15px', 
-            borderRadius: '6px', 
+          <div style={{
+            background: '#d4edda',
+            color: '#155724',
+            padding: '15px',
+            borderRadius: '6px',
             marginBottom: '20px',
             border: '1px solid #c3e6cb'
           }}>
@@ -346,11 +353,11 @@ export const SubmissionPage: React.FC = () => {
           )}
 
           <div style={{ textAlign: 'center' }}>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn"
-              style={{ 
-                backgroundColor: '#dc3545', 
+              style={{
+                backgroundColor: '#dc3545',
                 color: 'white',
                 border: '1px solid #dc3545'
               }}

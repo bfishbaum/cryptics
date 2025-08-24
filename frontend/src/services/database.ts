@@ -1,8 +1,11 @@
 import type { Cryptogram, CryptogramInput } from '../types/cryptogram';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+const AUTH0_AUDIENCE = import.meta.env.VITE_AUTH0_AUDIENCE || 'cryptic_api_id';
 
 export class DatabaseService {
+
   static async getAllCryptograms(): Promise<Cryptogram[]> {
     const response = await fetch(`${API_BASE_URL}/cryptograms`);
     if (!response.ok) {
@@ -57,11 +60,12 @@ export class DatabaseService {
     }));
   }
 
-  static async createCryptogram(cryptogram: CryptogramInput): Promise<Cryptogram> {
+  static async createCryptogram(cryptogram: CryptogramInput, accessToken: string): Promise<Cryptogram> {
     const response = await fetch(`${API_BASE_URL}/cryptograms`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
       },
       body: JSON.stringify(cryptogram),
     });
@@ -75,9 +79,13 @@ export class DatabaseService {
     };
   }
 
-  static async deleteCryptogram(id: number): Promise<void> {
+  static async deleteCryptogram(id: number, accessToken: string): Promise<void> {
     const response = await fetch(`${API_BASE_URL}/cryptograms/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
     });
     if (response.status === 404) {
       throw new Error('Cryptogram not found');

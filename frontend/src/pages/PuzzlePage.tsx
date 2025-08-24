@@ -49,7 +49,7 @@ export const PuzzlePage: React.FC = () => {
   if (loading) {
     return (
       <div className="container">
-        <div className="loading">Loading cryptogram...</div>
+        <div className="loading">Loading cryptic clue...</div>
       </div>
     );
   }
@@ -71,7 +71,7 @@ export const PuzzlePage: React.FC = () => {
     <div className="container">
       <div className="white-box">
         <h1 className="page-title">
-          {id ? `Cryptic Crossword #${id}` : 'Latest Cryptic Crossword'}ogram
+          {id ? `Cryptic Crossword #${id}` : 'Latest Cryptic Crossword'}
         </h1>
         <CryptogramGame cryptogram={cryptogram} />
       </div>
