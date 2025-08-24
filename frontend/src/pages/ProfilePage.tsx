@@ -6,10 +6,10 @@ export const ProfilePage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="page-container">
-        <div className="content-box">
-          <h1>Profile</h1>
-          <p>Loading...</p>
+      <div className="container">
+        <div className="white-box" style={{ textAlign: 'center', padding: '40px' }}>
+          <h1 className="page-title">Profile</h1>
+          <p style={{ fontSize: '18px' }}>Loading...</p>
         </div>
       </div>
     );
@@ -17,14 +17,16 @@ export const ProfilePage: React.FC = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="page-container">
-        <div className="content-box">
-          <h1>Profile</h1>
-          <p>You must be logged in to view your profile.</p>
-          <button 
+      <div className="container">
+        <div className="white-box" style={{ textAlign: 'center', padding: '40px' }}>
+          <h1 className="page-title">Profile</h1>
+          <p style={{ fontSize: '18px', marginBottom: '30px' }}>
+            You must be logged in to view your profile.
+          </p>
+          <button
             onClick={() => loginWithRedirect()}
-            className="submit-btn"
-            style={{ marginTop: '1rem' }}
+            className="btn btn-primary"
+            style={{ fontSize: '16px', padding: '12px 24px' }}
           >
             Log In
           </button>
@@ -34,30 +36,72 @@ export const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="page-container">
-      <div className="content-box">
-        <h1>Profile</h1>
-        <div className="profile-info">
+    <div className="container">
+      <div className="white-box">
+        <h1 className="page-title">Profile</h1>
+        <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
           {user?.picture && (
             <img 
               src={user.picture} 
               alt="Profile" 
-              className="profile-picture"
               style={{
-                width: '80px',
-                height: '80px',
+                width: '100px',
+                height: '100px',
                 borderRadius: '50%',
-                marginBottom: '1rem',
-                border: '2px solid #ccc'
+                marginBottom: '30px',
+                border: '2px solid #000'
               }}
             />
           )}
-          <div className="profile-details">
-            <p><strong>Name:</strong> {user?.name || 'Not provided'}</p>
-            <p><strong>Email:</strong> {user?.email || 'Not provided'}</p>
-            <p><strong>Username:</strong> {user?.nickname || user?.preferred_username || 'Not provided'}</p>
+          <div style={{ textAlign: 'left' }}>
+            <div className="form-group">
+              <label className="form-label">Name</label>
+              <div style={{ 
+                padding: '12px', 
+                border: '1px solid #000', 
+                borderRadius: '6px',
+                backgroundColor: '#f8f9fa'
+              }}>
+                {user?.name || 'Not provided'}
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Email</label>
+              <div style={{ 
+                padding: '12px', 
+                border: '1px solid #000', 
+                borderRadius: '6px',
+                backgroundColor: '#f8f9fa'
+              }}>
+                {user?.email || 'Not provided'}
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Username</label>
+              <div style={{ 
+                padding: '12px', 
+                border: '1px solid #000', 
+                borderRadius: '6px',
+                backgroundColor: '#f8f9fa'
+              }}>
+                {user?.nickname || user?.preferred_username || 'Not provided'}
+              </div>
+            </div>
+            
             {user?.email_verified !== undefined && (
-              <p><strong>Email Verified:</strong> {user.email_verified ? 'Yes' : 'No'}</p>
+              <div className="form-group">
+                <label className="form-label">Email Verified</label>
+                <div style={{ 
+                  padding: '12px', 
+                  border: '1px solid #000', 
+                  borderRadius: '6px',
+                  backgroundColor: '#f8f9fa'
+                }}>
+                  {user.email_verified ? 'Yes' : 'No'}
+                </div>
+              </div>
             )}
           </div>
         </div>

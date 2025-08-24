@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { DatabaseService } from '../services/database';
 import { Source } from '../types/cryptogram';
 import { validateSolution } from '../utils/validation';
 import { useAuth0 } from '@auth0/auth0-react';
-import CryptoJS from 'crypto-js';
 
 export const SubmissionPage: React.FC = () => {
-  // Use Auth0 API hook
-  const [password, setPassword] = useState('');
-  const { isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup, loginWithRedirect } = useAuth0();
 
   const [formData, setFormData] = useState({
     puzzle: '',
@@ -179,6 +176,26 @@ export const SubmissionPage: React.FC = () => {
       setIsDeleting(false);
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container">
+        <div className="white-box" style={{ textAlign: 'center', padding: '40px' }}>
+          <h1 className="page-title">Access Restricted</h1>
+          <p style={{ fontSize: '18px', marginBottom: '30px' }}>
+            You need to be signed in to submit and manage cryptograms.
+          </p>
+          <button
+            onClick={() => loginWithRedirect()}
+            className="btn btn-primary"
+            style={{ fontSize: '16px', padding: '12px 24px' }}
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
