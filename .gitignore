@@ -50,7 +50,7 @@ temp/
 # Scripts (contains sensitive deployment configs)
 scripts/
 api/scripts/refresh_docker_ecs.sh
-api/src/migrations/*.ts
+api/src/migrations/*
 
 # Claude
 .claude/
