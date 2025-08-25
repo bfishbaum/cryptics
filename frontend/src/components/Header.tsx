@@ -4,11 +4,11 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const LoginButton = () => {
   const {  loginWithRedirect } = useAuth0();
-  return <button onClick={() => loginWithRedirect()} className='nav-link'>Log In</button>;
+  return <span onClick={() => loginWithRedirect()} className='nav-link' style={{ cursor: 'pointer' }}>Log In</span>;
 }
 const LogoutButton = () => {
   const {  logout } = useAuth0();
-  return <button onClick={() => logout()} className='nav-link'>Log Out</button>;
+  return <span onClick={() => logout()} className='nav-link' style={{ cursor: 'pointer' }}>Log Out</span>;
 }
 
 export const Header: React.FC = () => {
