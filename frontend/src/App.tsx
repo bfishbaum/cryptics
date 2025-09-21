@@ -8,6 +8,8 @@ import { ArchivePage } from './pages/ArchivePage';
 import { SubmissionPage } from './pages/SubmissionPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { SupportPage } from './pages/SupportPage';
+import { AboutPage } from './pages/AboutPage';
 import './styles/globals.css';
 
 // Create a client
@@ -38,6 +40,8 @@ function App() {
               <Route path="/submit" element={<SubmissionPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/support" element={<SupportPage />} />
+              <Route path="/about" element={<AboutPage />} />
             </Routes>
           </main>
           <CookieConsent />
