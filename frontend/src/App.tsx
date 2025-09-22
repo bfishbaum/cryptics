@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Header } from './components/Header';
+import { Header, NavigationMenu } from './components/Header';
 import { CookieConsent } from './components/CookieConsent';
 import { MainPage } from './pages/MainPage';
 import { PuzzlePage } from './pages/PuzzlePage';
@@ -30,6 +30,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router basename={basename}>
         <div className="App">
+          <NavigationMenu />
           <Header />
           <main className="main-content">
             <Routes>
