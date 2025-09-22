@@ -5,7 +5,7 @@ export class CrypticDatabaseService {
 	static async getAllCryptograms(): Promise<Cryptogram[]> {
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM cryptograms ORDER BY date_added DESC'
+			'SELECT * FROM cryptograms WHERE hidden = FALSE ORDER BY date_added DESC'
 		);
 		return result.rows.map((row: any) => ({
 			...row,
@@ -16,7 +16,7 @@ export class CrypticDatabaseService {
 	static async getCryptogramById(id: number): Promise<Cryptogram | null> {
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM cryptograms WHERE id = $1',
+			'SELECT * FROM cryptograms WHERE id = $1 AND hidden = FALSE',
 			[id]
 		);
 
@@ -30,7 +30,7 @@ export class CrypticDatabaseService {
 	static async getLatestCryptogram(): Promise<Cryptogram | null> {
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM cryptograms ORDER BY date_added DESC LIMIT 1'
+			'SELECT * FROM cryptograms WHERE hidden = FALSE ORDER BY date_added DESC LIMIT 1'
 		);
 		if (result.rows.length === 0) return null;
 		return {
@@ -43,7 +43,7 @@ export class CrypticDatabaseService {
 		const offset = (page - 1) * limit;
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM cryptograms ORDER BY date_added DESC LIMIT $1 OFFSET $2',
+			'SELECT * FROM cryptograms WHERE hidden = FALSE ORDER BY date_added DESC LIMIT $1 OFFSET $2',
 			[limit, offset]
 		);
 
@@ -78,7 +78,7 @@ export class CrypticDatabaseService {
 	static async deleteCryptogram(id: number): Promise<boolean> {
 		const pool = getPool();
 		const result = await pool.query(
-			'DELETE FROM cryptograms WHERE id = $1 RETURNING id',
+			'UPDATE cryptograms SET hidden = TRUE WHERE id = $1 AND hidden = FALSE RETURNING id',
 			[id]
 		);
 
