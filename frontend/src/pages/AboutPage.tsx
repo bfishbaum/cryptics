@@ -53,14 +53,109 @@ export const AboutPage: React.FC = () => {
 
             <div style={{ marginBottom: '20px' }}>
               <h3 style={{ fontSize: '18px', marginBottom: '10px' }}>2. Common Wordplay Types</h3>
-              <ul style={{ marginBottom: '15px', paddingLeft: '20px' }}>
-                <li><strong>Anagrams:</strong> Rearranging letters (indicated by words like "mixed", "confused", "broken")</li>
-                <li><strong>Hidden Words:</strong> Answer hidden within the clue (indicated by "in", "within", "inside")</li>
-                <li><strong>Reversals:</strong> Answer spelled backwards (indicated by "back", "returned", "reversed")</li>
-                <li><strong>Homophones:</strong> Sounds like another word (indicated by "sounds", "heard", "spoken")</li>
-                <li><strong>Abbreviations:</strong> Using common abbreviations or initials</li>
-                <li><strong>Double Definitions:</strong> Two different meanings of the same word</li>
-              </ul>
+              <h4 style={{ fontSize: '16px', marginBottom: '10px' }}>Examples include | to denote split between wordplay and definition</h3>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '16px', marginBottom: '8px', fontWeight: 'bold' }}>Anagrams</h4>
+                <p style={{ marginBottom: '10px' }}>Rearranging letters (indicated by words like "mixed", "confused", "broken")</p>
+                <div style={{
+                  background: '#f8f9fa',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #dee2e6',
+                  fontFamily: 'monospace',
+                  fontSize: '14px'
+                }}>
+                  <strong>Examples:</strong><br/>
+                  • "Mixed up skate | steals (6)" → TAKES<br/>
+                  • "Broken rewards holds | undies (7)" → DRAWERS<br/>  
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '16px', marginBottom: '8px', fontWeight: 'bold' }}>Hidden Words</h4>
+                <p style={{ marginBottom: '10px' }}>Answer hidden within the clue (indicated by "in", "within", "inside")</p>
+                <div style={{
+                  background: '#f8f9fa',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #dee2e6',
+                  fontFamily: 'monospace',
+                  fontSize: '14px'
+                }}>
+                  <strong>Examples:</strong><br/>
+                  • "Look at this penguin, an' it yields | frivolity (7)" → INANITY<br/>
+                  • "Don't harm us, I can carry | a tune! (5)" → MUSIC<br/>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '16px', marginBottom: '8px', fontWeight: 'bold' }}>Reversals</h4>
+                <p style={{ marginBottom: '10px' }}>Answer spelled backwards (indicated by "back", "returned", "reversed")</p>
+                <div style={{
+                  background: '#f8f9fa',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #dee2e6',
+                  fontFamily: 'monospace',
+                  fontSize: '14px'
+                }}>
+                  <strong>Examples:</strong><br/>
+                  • "Come back and nibble on | a tie (6)" → BIND<br/>
+                  • "He ran sneakily, backwards into | a trap (7)" → SNARE<br/>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '16px', marginBottom: '8px', fontWeight: 'bold' }}>Homophones</h4>
+                <p style={{ marginBottom: '10px' }}>Sounds like another word or letters (indicated by "sounds", "heard", "radio")</p>
+                <div style={{
+                  background: '#f8f9fa',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #dee2e6',
+                  fontFamily: 'monospace',
+                  fontSize: '14px'
+                }}>
+                  <strong>Examples:</strong><br/>
+                  • "Any sound wins | novel (5)" → NEW<br/>
+                  • "Hear the sea, the | boil" (6)" → SEETHE<br/>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '16px', marginBottom: '8px', fontWeight: 'bold' }}>Abbreviations</h4>
+                <p style={{ marginBottom: '10px' }}>Using common abbreviations or initials</p>
+                <div style={{
+                  background: '#f8f9fa',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #dee2e6',
+                  fontFamily: 'monospace',
+                  fontSize: '14px'
+                }}>
+                  <strong>Examples:</strong><br/>
+                  • "Doctor Edge | brings up old dirt (6)" → DREDGE <br/>
+                  • "Mistake a New Testament as | wayward (6)" → ERRANT<br/>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '16px', marginBottom: '8px', fontWeight: 'bold' }}>Double Definitions</h4>
+                <p style={{ marginBottom: '10px' }}>Two different meanings of the same word</p>
+                <div style={{
+                  background: '#f8f9fa',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #dee2e6',
+                  fontFamily: 'monospace',
+                  fontSize: '14px'
+                }}>
+                  <strong>Examples:</strong><br/>
+                  • "Hunt and peck a preferred lover(4)" → TYPE<br/>
+                  • "An excited dog does this to your jeans(4)" → PANTS<br/>
+                </div>
+              </div>
             </div>
 
             <div style={{ marginBottom: '20px' }}>
@@ -70,7 +165,7 @@ export const AboutPage: React.FC = () => {
               </p>
               <ul style={{ marginBottom: '15px', paddingLeft: '20px' }}>
                 <li><strong>Anagram indicators:</strong> broken, mixed, twisted, wild, crazy, etc.</li>
-                <li><strong>Reversal indicators:</strong> back, returned, going west, upside down, etc.</li>
+                <li><strong>Reversal indicators:</strong> back, returned, going west (left), upside down, etc.</li>
                 <li><strong>Hidden word indicators:</strong> in, within, inside, part of, some, etc.</li>
                 <li><strong>Homophone indicators:</strong> sounds, heard, spoken, audibly, etc.</li>
               </ul>
@@ -98,6 +193,7 @@ export const AboutPage: React.FC = () => {
                 <li>Look for words that can have multiple meanings</li>
                 <li>Consider the grammar - words might change form in the wordplay</li>
                 <li>Use crossing letters to help confirm your answers</li>
+                <li>If words stand out consider replacing them with common synonyms</li>
               </ul>
             </div>
           </section>
@@ -111,16 +207,15 @@ export const AboutPage: React.FC = () => {
               border: '1px solid #dee2e6',
               marginBottom: '15px'
             }}>
-              <strong>Clue:</strong> "Fruit that's red mixed in with a dance (5)"<br/>
-              <strong>Answer:</strong> MANGO
+              <strong>Clue:</strong> "Sounds like the North East passage! Let's move on! (6)"<br/>
+              <strong>Answer:</strong> ANYWAY 
               <div style={{ marginTop: '10px', fontSize: '14px', color: '#6c757d' }}>
                 <strong>Breakdown:</strong><br/>
-                • Definition: "Fruit"<br/>
-                • Wordplay: "red mixed" (anagram indicator) "in with a dance"<br/>
-                • Take "red" and "mixed" suggests anagram<br/>
-                • "in with a" = letters from "a" = A<br/>
-                • "dance" = GO (as in "let's go dancing")<br/>
-                • Anagram of "red" + A + GO = MANGO
+                • Definition: "Let's move on"<br/>
+                • Wordplay: "Sounds like" the north east becomes NE <br/>
+                • So instead of NE we have ANY <br/>
+                • Passage is replaced with way <br/>
+                • Combine we have ANYWAY, which means, Let's move on<br/>
               </div>
             </div>
           </section>
