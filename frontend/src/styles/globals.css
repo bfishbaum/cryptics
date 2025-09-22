@@ -179,7 +179,7 @@ body {
   border-radius: 0;
   cursor: pointer;
   transition: color 0.2s ease;
-  text-align: center;
+  text-align: left;
   font-family: inherit;
 }
 
