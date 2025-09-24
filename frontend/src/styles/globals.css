@@ -179,7 +179,7 @@ body {
   border-radius: 0;
   cursor: pointer;
   transition: color 0.2s ease;
-  text-align: left;
+  text-align: inherit;
   font-family: inherit;
 }
 
@@ -190,6 +190,7 @@ body {
 .nav-section .nav-link-container {
   display: block;
   width: 100%;
+  text-align: center;
   padding: 0;
   margin: 0;
 }
