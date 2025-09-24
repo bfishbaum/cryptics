@@ -69,8 +69,8 @@ export const AboutPage: React.FC = () => {
                   fontSize: '14px'
                 }}>
                   <strong>Examples:</strong><br />
-                  • "Mixed up skate | steals (6)" → TAKES<br />
-                  • "Broken rewards holds | undies (7)" → DRAWERS<br />
+                  • "Broken stake steals (6)" → TAKES<br />
+                  • " rewards holds undies (7)" → DRAWERS<br />
                 </div>
               </div>
 

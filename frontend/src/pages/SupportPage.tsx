@@ -11,7 +11,7 @@ export const SupportPage: React.FC = () => {
             <h2 style={{ fontSize: '24px', marginBottom: '15px' }}>Need Help?</h2>
             <p style={{ marginBottom: '15px' }}>
               If you're experiencing issues with the cryptogram puzzles or have questions about how to solve them,
-              we're here to help! Our support team is dedicated to ensuring you have the best puzzle-solving experience.
+              check the about page!
             </p>
           </section>
 
@@ -34,9 +34,6 @@ export const SupportPage: React.FC = () => {
                 </a>
               </strong>
             </div>
-            <p style={{ marginBottom: '15px', fontSize: '14px', color: '#6c757d' }}>
-              We typically respond to emails within 24-48 hours.
-            </p>
           </section>
 
           <section style={{ marginBottom: '30px' }}>
