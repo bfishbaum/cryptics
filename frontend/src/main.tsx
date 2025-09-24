@@ -10,7 +10,7 @@ createRoot(document.getElementById('root')!).render(
     domain='dev-l01xcafdoui0qywg.us.auth0.com'
     clientId='zidEswQhfP0z4dcYa57zXqeC0Kha7I3R'
     authorizationParams={{
-      redirect_uri: import.meta.env.PROD ? import.meta.env.LOGIN_REDIRECT_URI : window.location.origin,
+      redirect_uri: import.meta.env.VITE_LOGIN_REDIRECT_URI,
       audience: 'cryptic_api_id',
     }}
     useRefreshTokens={true}
