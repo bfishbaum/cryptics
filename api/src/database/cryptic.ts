@@ -1,5 +1,5 @@
-import { getPool } from './init';
-import { type Cryptogram, type CryptogramInput } from '../types/crypticTypes';
+import { getPool } from './init.js';
+import { type Cryptogram, type CryptogramInput } from '../types/crypticTypes.js';
 
 export class CrypticDatabaseService {
 	static async getAllCryptograms(): Promise<Cryptogram[]> {

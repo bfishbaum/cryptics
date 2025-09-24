@@ -1,9 +1,8 @@
 import { Router } from "express";
 
-import { CrypticDatabaseService } from "../database/cryptic";
-import { type Cryptogram, type CryptogramInput } from '../types/crypticTypes';
-import { jwtCheck, checkPermissionsAny } from '../middleware/admin';
-import { jwt } from "zod";
+import { CrypticDatabaseService } from "../database/cryptic.js";
+import { type Cryptogram, type CryptogramInput } from '../types/crypticTypes.js';
+import { jwtCheck, checkPermissionsAny } from '../middleware/admin.js';
 
 const router = Router();
 // Get all cryptograms

@@ -1,18 +1,26 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "outDir": "dist",
-    "rootDir": "src",
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "outDir": "./build",
+    "rootDir": "./src",
     "sourceMap": true,
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "../frontend"],
-  "files": ["src/types/request.d.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "../frontend"
+  ],
+  "files": [
+    "src/types/request.d.ts"
+  ]
 }

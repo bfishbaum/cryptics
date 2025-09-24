@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-const { auth, requiredScopes } = require('express-oauth2-jwt-bearer');
+import { auth, requiredScopes } from 'express-oauth2-jwt-bearer';
 
 export const jwtCheck = auth({
 	audience: 'cryptic_api_id',

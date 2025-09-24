@@ -21,56 +21,43 @@ const pool = new Pool({
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
-async function initializeDatabase() {
-  const client = await pool.connect();
+// async function initializeDatabase() {
+//   const client = await pool.connect();
 
-  try {
-    console.log('🚀 Starting database initialization...');
+//   try {
+//     console.log('🚀 Starting database initialization...');
 
-    // Read schema file
-    const schemaPath = path.join(__dirname, 'schema.sql');
-    const schema = fs.readFileSync(schemaPath, 'utf8');
+//     // Read schema file
+//     const schemaPath = path.join(__dirname, 'schema.sql');
+//     const schema = fs.readFileSync(schemaPath, 'utf8');
 
-    // Execute schema
-    console.log('📋 Creating database schema...');
-    await client.query(schema);
+//     // Execute schema
+//     console.log('📋 Creating database schema...');
+//     await client.query(schema);
 
-    console.log('✅ Database schema created successfully!');
+//     console.log('✅ Database schema created successfully!');
 
-    // Check if sample data was inserted
-    const userCount = await client.query('SELECT COUNT(*) FROM users');
-    console.log(`👥 Created ${userCount.rows[0].count} sample users`);
+//     // Check if sample data was inserted
+//     const userCount = await client.query('SELECT COUNT(*) FROM users');
+//     console.log(`👥 Created ${userCount.rows[0].count} sample users`);
 
-    console.log('🎉 Database initialization completed successfully!');
-    console.log('');
-    console.log('Sample users created:');
-    console.log('- Admin: admin@crypticclues.com / admin123');
-    console.log('- User: user@example.com / user123');
+//     console.log('🎉 Database initialization completed successfully!');
+//     console.log('');
+//     console.log('Sample users created:');
+//     console.log('- Admin: admin@crypticclues.com / admin123');
+//     console.log('- User: user@example.com / user123');
 
-  } catch (error) {
-    console.error('❌ Error initializing database:', error);
-    throw error;
-  } finally {
-    client.release();
-    await pool.end();
-  }
-}
-
-// Run initialization if called directly
-if (require.main === module) {
-  initializeDatabase()
-    .then(() => {
-      console.log('Database initialization completed successfully!');
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error('Database initialization failed:', error);
-      process.exit(1);
-    });
-}
+//   } catch (error) {
+//     console.error('❌ Error initializing database:', error);
+//     throw error;
+//   } finally {
+//     client.release();
+//     await pool.end();
+//   }
+// }
 
 export function getPool(): Pool {
   return pool;
 }
 
-export { initializeDatabase };
+// export { initializeDatabase };
