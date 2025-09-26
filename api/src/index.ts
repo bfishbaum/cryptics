@@ -2,14 +2,15 @@ import express from 'express'
 import cors from 'cors';
 import dotenv from 'dotenv';
 import crypticRouter from './routes/crypticRoutes.js';
+import userRouter from './routes/userRoutes.js';
+import userPuzzlesRouter from './routes/userPuzzlesRoutes.js';
 
 const app = express()
 
-// Middleware
-app.use(cors({
-  origin: [process.env.FRONTEND_URL || 'http://localhost:5173', 'https://127.0.0.1:5173', 'https://bfishbaum.github.io/cryptics'],
-}));
-
+const cors_setting = {
+  origin: [process.env.FRONTEND_URL || 'http://localhost:5173', 'https://bfishbaum.github.io/cryptics'],
+  credentials: true,
+}
 
 app.use(express.json());
 // Health check endpoint
@@ -18,5 +19,7 @@ app.get('/health', (req, res) => {
 });
 
 
-app.use('/api', crypticRouter);
+app.use('/api/cryptics/', cors(cors_setting), crypticRouter);
+app.use('/api/users/', userRouter);
+app.use('/api/userspuzzles/', cors(cors_setting), userPuzzlesRouter);
 export default app

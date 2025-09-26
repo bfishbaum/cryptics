@@ -1,0 +1,68 @@
+import { Router } from "express";
+
+import { UserPuzzleDatabaseService } from "../database/user_puzzles.js";
+import { type Cryptogram, type CryptogramInput } from '../types/crypticTypes.js';
+import { jwtCheck, checkPermissionsAny, extractUserId } from '../middleware/admin.js';
+import { jwt } from "zod";
+import { UserDatabaseService } from "../database/users.js";
+
+const router = Router();
+// Get all cryptograms
+// Get latest cryptogram (must come before /:id route)
+
+router.get('/puzzles/:id', jwtCheck, async (req, res) => {
+	try {
+		const user_id = req.params.id;
+		const puzzles = await UserPuzzleDatabaseService.getUserPuzzlesByUser(1, 20, user_id);
+		if (!puzzles) {
+			return res.status(404).json({ error: 'No puzzles found for user' });
+		}
+		res.json(puzzles);
+	} catch (error) {
+		console.error('Error fetching user puzzles:', error);
+		res.status(500).json({
+			error: 'Internal server error',
+			details: error instanceof Error ? error.message : String(error),
+			stack: error instanceof Error ? error.stack : undefined
+		});
+	}
+});
+
+router.get('/mypuzzles', jwtCheck, extractUserId, async (req, res) => {
+	try {
+		const user_id = req.body.user_id;
+		const puzzles = await UserPuzzleDatabaseService.getUserPuzzlesByUser(1, 20, user_id);
+		if (!puzzles) {
+			return res.status(404).json({ error: 'No puzzles found for user' });
+		}
+		res.json(puzzles);
+	} catch (error) {
+		console.error('Error fetching user puzzles:', error);
+		res.status(500).json({
+			error: 'Internal server error',
+			details: error instanceof Error ? error.message : String(error),
+			stack: error instanceof Error ? error.stack : undefined
+		});
+	}
+});
+
+router.post('/submit', jwtCheck, extractUserId, async (req, res) => {
+	try {
+		const puzzleData: CryptogramInput = req.body.puzzle;
+		if (!puzzleData.puzzle || !puzzleData.solution) {
+			return res.status(400).json({ error: 'Puzzle and solution are required' });
+		}
+		const display_name: string = await UserDatabaseService.getDisplayNameByUserId(req.body.user_id);
+		const puzzle = await UserPuzzleDatabaseService.createUserPuzzle(puzzleData, req.body.user_id, display_name || 'Anonymous');
+		return res.status(201).json(puzzle);
+	} catch (error) {
+		console.error('Error submitting puzzle:', error);
+		res.status(500).json({
+			error: 'Internal server error',
+			details: error instanceof Error ? error.message : String(error),
+			stack: error instanceof Error ? error.stack : undefined
+		});
+	}
+});
+
+export default router;

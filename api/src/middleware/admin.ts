@@ -33,3 +33,25 @@ export const checkPermissionsAll = (requiredPermissions: string[]) => {
 		return next();
 	}
 }
+
+export const extractUserId = (req: Request, res: Response, next: NextFunction) => {
+	try {
+		// Extract user ID from Auth0 JWT token
+		if (req.auth && req.auth.payload && req.auth.payload.sub) {
+			req.body.user_id = req.auth.payload.sub;
+		}
+		next();
+	} catch (error) {
+		console.error('Error extracting user ID:', error);
+		next();
+	}
+};
+
+// This is for the post login hook in Auth0
+export const checkAuth0ApiSecret = (req: Request, res: Response, next: NextFunction) => {
+	const apiSecret = req.headers['Authentication'];
+	if (apiSecret !== process.env.AUTH0_API_SECRET) {
+		return res.status(403).json({ error: 'Forbidden: Invalid API secret' });
+	}
+	return next();
+}
