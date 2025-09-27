@@ -48,7 +48,7 @@ export class UserPuzzleDatabaseService {
 	static async createUserPuzzle(cryptogram: CryptogramInput, user_id: string, display_name: string): Promise<Cryptogram> {
 		const pool = getPool();
 		const result = await pool.query(
-			`INSERT INTO cryptograms (creator_id, puzzle, solution, explanation, creator_name, source, difficulty, date_added, private) 
+			`INSERT INTO user_puzzles (creator_id, puzzle, solution, explanation, creator_name, difficulty, date_added, private) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
        RETURNING *`,
 			[
@@ -57,10 +57,9 @@ export class UserPuzzleDatabaseService {
 				cryptogram.solution,
 				cryptogram.explanation,
 				display_name,
-				cryptogram.source,
 				cryptogram.difficulty,
 				cryptogram.date_added,
-				cryptogram.private
+				false // New puzzles are public by default
 			]
 		);
 
@@ -73,7 +72,7 @@ export class UserPuzzleDatabaseService {
 	static async updateDisplayNames(user_id: string, new_name: string): Promise<boolean> {
 		const pool = getPool();
 		const result = await pool.query(
-			'UPDATE cryptograms SET creator_name = $2 WHERE creator_id = $1',
+			'UPDATE user_puzzles SET creator_name = $2 WHERE creator_id = $1',
 			[user_id, new_name]
 		);
 
@@ -83,7 +82,7 @@ export class UserPuzzleDatabaseService {
 	static async deleteUserPuzzle(id: number, user_id:number): Promise<boolean> {
 		const pool = getPool();
 		const result = await pool.query(
-			'UPDATE cryptograms SET hidden = TRUE WHERE id = $1 AND hidden = FALSE and creator_id = $2 RETURNING id',
+			'UPDATE user_puzzles SET hidden = TRUE WHERE id = $1 AND hidden = FALSE and creator_id = $2 RETURNING id',
 			[id, user_id]
 		);
 
