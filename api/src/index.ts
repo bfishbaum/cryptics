@@ -21,5 +21,5 @@ app.get('/health', (req, res) => {
 
 app.use('/api/cryptics/', cors(cors_setting), crypticRouter);
 app.use('/api/users/', userRouter);
-app.use('/api/userspuzzles/', cors(cors_setting), userPuzzlesRouter);
+app.use('/api/userpuzzles/', cors(cors_setting), userPuzzlesRouter);
 export default app
