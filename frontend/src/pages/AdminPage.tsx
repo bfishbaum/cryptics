@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { UserPuzzleDatabaseService } from '../services/userPuzzles';
+import { CrypticDatabaseService } from '../services/cryptics';
 import { Source } from '../types/cryptogram';
 import { validateSolution } from '../utils/validation';
 import { useAuth0 } from '@auth0/auth0-react';
 
-export const SubmissionPage: React.FC = () => {
+export const AdminPage: React.FC = () => {
   const { isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup, loginWithRedirect } = useAuth0();
 
   const [formData, setFormData] = useState({
@@ -17,6 +17,9 @@ export const SubmissionPage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [deleteId, setDeleteId] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
 
   // Helper function to get access token when needed
   const getAccessToken = async (): Promise<string | null> => {
@@ -24,6 +27,7 @@ export const SubmissionPage: React.FC = () => {
       const accessToken = await getAccessTokenSilently({
         authorizationParams: {
           audience: 'cryptic_api_id',
+          scope: "delete:cryptic write:new_cryptic",
         },
         cacheMode: 'on', // Use cached token if available
       });
@@ -36,6 +40,7 @@ export const SubmissionPage: React.FC = () => {
         const accessToken = await getAccessTokenWithPopup({
           authorizationParams: {
             audience: 'cryptic_api_id',
+            scope: "delete:cryptic write:new_cryptic",
           },
         });
         if (!accessToken) {
@@ -95,7 +100,7 @@ export const SubmissionPage: React.FC = () => {
       }
       console.log(accessToken);
 
-      await UserPuzzleDatabaseService.createUserPuzzle({
+      await CrypticDatabaseService.createCryptogram({
         puzzle: formData.puzzle,
         solution: formData.solution,
         explanation: formData.explanation || undefined,
@@ -104,7 +109,7 @@ export const SubmissionPage: React.FC = () => {
         date_added: new Date(formData.date_added)
       }, accessToken);
 
-      setSuccessMessage('Puzzle submitted successfully!');
+      setSuccessMessage('Cryptic submitted successfully!');
       setFormData({
         puzzle: '',
         solution: '',
@@ -114,7 +119,7 @@ export const SubmissionPage: React.FC = () => {
       });
       setErrors({});
     } catch {
-      setErrors({ submit: 'Failed to submit puzzle. Please try again.' });
+      setErrors({ submit: 'Failed to submit cryptogram. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -132,6 +137,43 @@ export const SubmissionPage: React.FC = () => {
         ...prev,
         [field]: ''
       }));
+    }
+  };
+
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const id = parseInt(deleteId);
+    if (isNaN(id) || id <= 0) {
+      setErrors({ deleteId: 'Please enter a valid ID number' });
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete cryptogram with ID ${id}? This action cannot be undone.`)) {
+      return;
+    }
+
+    setIsDeleting(true);
+    setDeleteSuccessMessage('');
+    setErrors(prev => ({ ...prev, deleteId: '', deleteSubmit: '' }));
+
+    try {
+      // Get access token when we actually need it
+      const accessToken = await getAccessToken();
+
+      if (!accessToken) {
+        setErrors(prev => ({ ...prev, deleteSubmit: 'Failed to get access token. Please try logging in again.' }));
+        return;
+      }
+
+      await CrypticDatabaseService.deleteCryptogram(id, accessToken);
+      setDeleteSuccessMessage(`Cryptogram with ID ${id} deleted successfully!`);
+      setDeleteId('');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete cryptogram';
+      setErrors(prev => ({ ...prev, deleteSubmit: errorMessage }));
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -274,6 +316,71 @@ export const SubmissionPage: React.FC = () => {
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Submitting...' : 'Submit Cryptogram'}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Delete Section */}
+      <div className="white-box" style={{ marginTop: '40px' }}>
+        <h2 className="page-title" style={{ fontSize: '24px', marginBottom: '20px' }}>Delete Cryptogram</h2>
+
+        {deleteSuccessMessage && (
+          <div style={{
+            background: '#d4edda',
+            color: '#155724',
+            padding: '15px',
+            borderRadius: '6px',
+            marginBottom: '20px',
+            border: '1px solid #c3e6cb'
+          }}>
+            {deleteSuccessMessage}
+          </div>
+        )}
+
+        <form onSubmit={handleDelete} style={{ maxWidth: '400px', margin: '0 auto' }}>
+          <div className="form-group">
+            <label htmlFor="deleteId" className="form-label">
+              Cryptogram ID *
+            </label>
+            <input
+              type="number"
+              id="deleteId"
+              className="form-input"
+              value={deleteId}
+              onChange={(e) => {
+                setDeleteId(e.target.value);
+                if (errors.deleteId) {
+                  setErrors(prev => ({ ...prev, deleteId: '' }));
+                }
+              }}
+              placeholder="Enter ID of cryptogram to delete"
+              min="1"
+              required
+            />
+            {errors.deleteId && (
+              <div className="error-message">{errors.deleteId}</div>
+            )}
+          </div>
+
+          {errors.deleteSubmit && (
+            <div className="error-message" style={{ textAlign: 'center', marginBottom: '20px' }}>
+              {errors.deleteSubmit}
+            </div>
+          )}
+
+          <div style={{ textAlign: 'center' }}>
+            <button
+              type="submit"
+              className="btn"
+              style={{
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: '1px solid #dc3545'
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Cryptogram'}
             </button>
           </div>
         </form>

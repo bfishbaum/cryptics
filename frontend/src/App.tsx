@@ -10,6 +10,7 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { SupportPage } from './pages/SupportPage';
 import { AboutPage } from './pages/AboutPage';
+import { AdminPage } from './pages/AdminPage';
 import './styles/globals.css';
 
 // Create a client
@@ -43,6 +44,7 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/support" element={<SupportPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/admin" element={<AdminPage />} />
             </Routes>
           </main>
           <CookieConsent />

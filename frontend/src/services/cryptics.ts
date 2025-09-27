@@ -1,11 +1,10 @@
 import type { Cryptogram, CryptogramInput } from '../types/cryptogram';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const CRYPTIC_API_BASE_URL = import.meta.env.VITE_API_URL + '/api/cryptics';
 
-export class DatabaseService {
-
+export class CrypticDatabaseService {
   static async getAllCryptograms(): Promise<Cryptogram[]> {
-    const response = await fetch(`${API_BASE_URL}/cryptograms`);
+    const response = await fetch(`${CRYPTIC_API_BASE_URL}/cryptograms`);
     if (!response.ok) {
       throw new Error('Failed to fetch cryptograms');
     }
@@ -17,7 +16,7 @@ export class DatabaseService {
   }
 
   static async getCryptogramById(id: number): Promise<Cryptogram | null> {
-    const response = await fetch(`${API_BASE_URL}/cryptograms/${id}`);
+    const response = await fetch(`${CRYPTIC_API_BASE_URL}/cryptograms/${id}`);
     if (response.status === 404) {
       return null;
     }
@@ -32,7 +31,7 @@ export class DatabaseService {
   }
 
   static async getLatestCryptogram(): Promise<Cryptogram | null> {
-    const response = await fetch(`${API_BASE_URL}/cryptograms/latest`);
+    const response = await fetch(`${CRYPTIC_API_BASE_URL}/cryptograms/latest`);
     if (response.status === 404) {
       return null;
     }
@@ -47,7 +46,7 @@ export class DatabaseService {
   }
 
   static async getLatestCryptograms(page: number = 1, limit: number = 20): Promise<Cryptogram[]> {
-    const response = await fetch(`${API_BASE_URL}/cryptograms/paginated?page=${page}&limit=${limit}`);
+    const response = await fetch(`${CRYPTIC_API_BASE_URL}/cryptograms/paginated?page=${page}&limit=${limit}`);
     if (!response.ok) {
       throw new Error('Failed to fetch cryptograms');
     }
@@ -59,7 +58,7 @@ export class DatabaseService {
   }
 
   static async createCryptogram(cryptogram: CryptogramInput, accessToken: string): Promise<Cryptogram> {
-    const response = await fetch(`${API_BASE_URL}/cryptograms`, {
+    const response = await fetch(`${CRYPTIC_API_BASE_URL}/cryptograms`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -78,7 +77,7 @@ export class DatabaseService {
   }
 
   static async deleteCryptogram(id: number, accessToken: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/cryptograms/${id}`, {
+    const response = await fetch(`${CRYPTIC_API_BASE_URL}/cryptograms/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

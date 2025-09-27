@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { DatabaseService } from '../services/database';
+import { CrypticDatabaseService } from '../services/cryptics';
 import type { Cryptogram } from '../types/cryptogram';
 import { isPuzzleCompleted } from '../utils/puzzleProgress';
 
@@ -16,7 +16,7 @@ export const ArchivePage: React.FC = () => {
     const loadCryptograms = async () => {
       try {
         setLoading(true);
-        const results = await DatabaseService.getLatestCryptograms(page, 20);
+        const results = await CrypticDatabaseService.getLatestCryptograms(page, 20);
 
         if (page === 1) {
           setCryptograms(results);

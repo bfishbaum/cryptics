@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CryptogramGame } from '../components/CryptogramGame';
-import { DatabaseService } from '../services/database';
+import { CrypticDatabaseService } from '../services/cryptics';
 import type { Cryptogram } from '../types/cryptogram';
 import '../styles/CryptogramGame.css';
 
@@ -13,7 +13,7 @@ export const MainPage: React.FC = () => {
     const loadLatestCryptogram = async () => {
       try {
         setLoading(true);
-        const latest = await DatabaseService.getLatestCryptogram();
+        const latest = await CrypticDatabaseService.getLatestCryptogram();
         setCryptogram(latest);
         setError(null);
       } catch (err) {

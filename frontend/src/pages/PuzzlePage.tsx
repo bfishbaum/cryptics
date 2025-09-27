@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CryptogramGame } from '../components/CryptogramGame';
-import { DatabaseService } from '../services/database';
+import { CrypticDatabaseService } from '../services/cryptics';
 import type { Cryptogram } from '../types/cryptogram';
 import '../styles/CryptogramGame.css';
 
@@ -24,13 +24,13 @@ export const PuzzlePage: React.FC = () => {
             navigate('/puzzle');
             return;
           }
-          result = await DatabaseService.getCryptogramById(puzzleId);
+          result = await CrypticDatabaseService.getCryptogramById(puzzleId);
           if (!result) {
             navigate('/puzzle');
             return;
           }
         } else {
-          result = await DatabaseService.getLatestCryptogram();
+          result = await CrypticDatabaseService.getLatestCryptogram();
         }
         
         setCryptogram(result);
