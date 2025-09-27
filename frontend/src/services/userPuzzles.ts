@@ -22,7 +22,7 @@ export class UserPuzzleDatabaseService {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`
       },
-      body: JSON.stringify(cryptogram),
+      body: JSON.stringify({"puzzle": cryptogram}),
     });
     if (!response.ok) {
       throw new Error('Failed to create cryptogram');
