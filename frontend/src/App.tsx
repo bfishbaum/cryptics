@@ -5,6 +5,7 @@ import { CookieConsent } from './components/CookieConsent';
 import { MainPage } from './pages/MainPage';
 import { PuzzlePage } from './pages/PuzzlePage';
 import { ArchivePage } from './pages/ArchivePage';
+import { UserArchivePage } from './pages/UserArchivePage';
 import { SubmissionPage } from './pages/SubmissionPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { ProfilePage } from './pages/ProfilePage';
@@ -39,6 +40,7 @@ function App() {
               <Route path="/puzzle" element={<PuzzlePage />} />
               <Route path="/puzzle/:id" element={<PuzzlePage />} />
               <Route path="/archive" element={<ArchivePage />} />
+              <Route path="/userarchive" element={<UserArchivePage />} />
               <Route path="/submit" element={<SubmissionPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/profile" element={<ProfilePage />} />

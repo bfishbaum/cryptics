@@ -69,6 +69,7 @@ export const NavigationMenu: React.FC = () => {
           <h3 className="nav-section-title">Puzzles</h3>
           <Link to="/" className="nav-link" onClick={closeMenu}>Home</Link>
           <Link to="/archive" className="nav-link" onClick={closeMenu}>Archive</Link>
+          <Link to="/userarchive" className="nav-link" onClick={closeMenu}>User Archive</Link>
           <Link to="/submit" className="nav-link" onClick={closeMenu}>Submit</Link>
         </div>
 
