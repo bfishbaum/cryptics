@@ -40,13 +40,13 @@ export const UserArchivePage: React.FC = () => {
     }
   };
 
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  // const formatDate = (date: Date) => {
+  //   return new Date(date).toLocaleDateString('en-US', {
+  //     year: 'numeric',
+  //     month: 'long',
+  //     day: 'numeric'
+  //   });
+  // };
 
   if (loading && page === 1) {
     return (
