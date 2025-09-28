@@ -20,7 +20,7 @@ export class UserPuzzleDatabaseService {
 		const offset = (page - 1) * limit;
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM user_puzzles WHERE hidden = FALSE and private = FALSE ORDER BY date_added DESC LIMIT $1 OFFSET $2',
+			'SELECT * FROM user_puzzles WHERE hidden = FALSE and private = FALSE ORDER BY id DESC LIMIT $1 OFFSET $2',
 			[limit, offset]
 		);
 
@@ -48,8 +48,8 @@ export class UserPuzzleDatabaseService {
 	static async createUserPuzzle(cryptogram: CryptogramInput, user_id: string, display_name: string): Promise<Cryptogram> {
 		const pool = getPool();
 		const result = await pool.query(
-			`INSERT INTO user_puzzles (creator_id, puzzle, solution, explanation, creator_name, difficulty, date_added, private) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+			`INSERT INTO user_puzzles (creator_id, puzzle, solution, explanation, creator_name, difficulty, private) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) 
        RETURNING *`,
 			[
 				user_id,
@@ -58,7 +58,6 @@ export class UserPuzzleDatabaseService {
 				cryptogram.explanation,
 				display_name,
 				cryptogram.difficulty,
-				cryptogram.date_added,
 				false // New puzzles are public by default
 			]
 		);

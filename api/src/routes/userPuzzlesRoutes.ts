@@ -8,16 +8,34 @@ import { UserDatabaseService } from "../database/users.js";
 
 const router = Router();
 // Get all cryptograms
-// Get latest cryptogram (must come before /:id route)
+//s Get latest cryptogram (must come before /:id route)
 
-router.get('/puzzles/:id', jwtCheck, async (req, res) => {
+router.get('/puzzles/paginated', async (req, res) => {
+  const startTime = Date.now();
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  try {
+    const puzzles = await UserPuzzleDatabaseService.getLatestUserPuzzles(page, limit);
+    const duration = Date.now() - startTime;
+    res.json(puzzles);
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    res.status(500).json({
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+  }
+});
+
+router.get('/puzzles/:id', async (req, res) => {
 	try {
-		const user_id = req.params.id;
-		const puzzles = await UserPuzzleDatabaseService.getUserPuzzlesByUser(1, 20, user_id);
-		if (!puzzles) {
-			return res.status(404).json({ error: 'No puzzles found for user' });
+		const puzzle_id = parseInt(req.params.id);
+		const puzzle = await UserPuzzleDatabaseService.getUserPuzzleById(puzzle_id);
+		if (!puzzle) {
+			return res.status(404).json({ error: 'No puzzles found for that number' });
 		}
-		res.json(puzzles);
+		res.json(puzzle);
 	} catch (error) {
 		console.error('Error fetching user puzzles:', error);
 		res.status(500).json({
