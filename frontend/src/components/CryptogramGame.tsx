@@ -6,9 +6,10 @@ import { savePuzzleProgress, getPuzzleProgress, markPuzzleCompleted, isPuzzleCom
 
 interface CryptogramGameProps {
   cryptogram: Cryptogram;
+  puzzleType?: 'regular' | 'user';
 }
 
-export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram }) => {
+export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram, puzzleType = 'regular' }) => {
   const [userInput, setUserInput] = useState<string[]>(new Array(cryptogram.solution.length).fill(''));
   const [, setCurrentIndex] = useState(0);
   const [gameState, setGameState] = useState<'playing' | 'correct' | 'incorrect' | 'given_up'>('playing');
@@ -19,16 +20,16 @@ export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram }) =>
     inputRefs.current = inputRefs.current.slice(0, cryptogram.solution.length);
     
     // Load saved progress if available
-    const savedProgress = getPuzzleProgress(cryptogram.id);
-    if (savedProgress && !isPuzzleCompleted(cryptogram.id)) {
+    const savedProgress = getPuzzleProgress(cryptogram.id, puzzleType);
+    if (savedProgress && !isPuzzleCompleted(cryptogram.id, puzzleType)) {
       setUserInput(savedProgress.userInput);
-    } else if (isPuzzleCompleted(cryptogram.id)) {
+    } else if (isPuzzleCompleted(cryptogram.id, puzzleType)) {
       // If puzzle was completed, show the solution
       setUserInput(cryptogram.solution.split(''));
       setGameState('correct');
       setShowExplanation(true);
     }
-  }, [cryptogram.id, cryptogram.solution.length]);
+  }, [cryptogram.id, cryptogram.solution.length, puzzleType]);
 
   const handleInputChange = (index: number, value: string) => {
     if (value.length > 1) return;
@@ -39,7 +40,7 @@ export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram }) =>
     setUserInput(newInput);
 
     // Save progress automatically
-    savePuzzleProgress(cryptogram.id, newInput);
+    savePuzzleProgress(cryptogram.id, newInput, puzzleType);
 
     if (value && index < cryptogram.solution.length - 1) {
       const nextIndex = findNextEditableIndex(index);
@@ -95,7 +96,7 @@ export const CryptogramGame: React.FC<CryptogramGameProps> = ({ cryptogram }) =>
       setGameState('correct');
       setShowExplanation(true);
       // Mark puzzle as completed
-      markPuzzleCompleted(cryptogram.id, userInput);
+      markPuzzleCompleted(cryptogram.id, userInput, puzzleType);
     } else {
       setGameState('incorrect');
       setTimeout(() => setGameState('playing'), 2000);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { UserPuzzleDatabaseService } from '../services/userPuzzles';
 import type { Cryptogram } from '../types/cryptogram';
-import { isPuzzleCompleted } from '../utils/puzzleProgress';
+import { isUserPuzzleCompleted } from '../utils/puzzleProgress';
 
 // TODO: Implement better pagination (infinite scroll?)
 
@@ -84,7 +84,7 @@ export const UserArchivePage: React.FC = () => {
               {cryptograms.map((cryptogram) => (
                 <Link
                   key={cryptogram.id}
-                  to={`/puzzle/${cryptogram.id}`}
+                  to={`/userpuzzle/${cryptogram.id}`}
                   className="archive-row"
                 >
                   <div className="archive-row-content">
@@ -95,7 +95,7 @@ export const UserArchivePage: React.FC = () => {
                       Difficulty: {cryptogram.difficulty}/5
                     </div>
                     <div className="archive-row-status">
-                      {isPuzzleCompleted(cryptogram.id) && (
+                      {isUserPuzzleCompleted(cryptogram.id) && (
                         <span className="completion-check">✓</span>
                       )}
                     </div>

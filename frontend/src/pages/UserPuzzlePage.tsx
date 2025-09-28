@@ -73,7 +73,7 @@ export const UserPuzzlePage: React.FC = () => {
         <h1 className="page-title">
           {id ? `Cryptic Crossword #${id}` : 'Latest Cryptic Crossword'}
         </h1>
-        <CryptogramGame cryptogram={cryptogram} />
+        <CryptogramGame cryptogram={cryptogram} puzzleType="user" />
       </div>
     </div>
   );
