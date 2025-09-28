@@ -72,8 +72,7 @@ export const UserArchivePage: React.FC = () => {
   return (
     <div className="container">
       <div className="white-box">
-        <h1 className="page-title">Cryptogram Archive</h1>
-
+        <h1 className="page-title">User Submitted Archive</h1>
         {cryptograms.length === 0 ? (
           <p style={{ textAlign: 'center', color: '#6c757d' }}>
             No cryptograms found.
