@@ -30,7 +30,7 @@
   .input-box {
     width: 36px;
     height: 36px;
-    font-size: 17px;
+    font-size: 20px;
   }
   
   .input-space {
@@ -59,7 +59,7 @@
   .input-box {
     width: 32px;
     height: 32px;
-    font-size: 16px;
+    font-size: 19px;
     border-width: 1px;
   }
   
@@ -91,7 +91,7 @@
   border: 2px solid #333;
   border-radius: 6px;
   text-align: center;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
   background-color: white !important;
   color: #333 !important;
