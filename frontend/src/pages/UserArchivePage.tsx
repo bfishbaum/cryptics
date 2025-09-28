@@ -87,9 +87,9 @@ export const UserArchivePage: React.FC = () => {
                   className="archive-row"
                 >
                   <div className="archive-row-content">
-                    <div className="archive-row-date">
+                    {/* <div className="archive-row-date">
                       {formatDate(cryptogram.date_added)}
-                    </div>
+                    </div> */}
                     <div className="archive-row-difficulty">
                       Difficulty: {cryptogram.difficulty}/5
                     </div>

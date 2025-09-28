@@ -244,23 +244,6 @@ export const SubmissionPage: React.FC = () => {
             )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="date_added" className="form-label">
-              Publish Date *
-            </label>
-            <input
-              type="date"
-              id="date_added"
-              className="form-input"
-              value={formData.date_added}
-              onChange={(e) => handleInputChange('date_added', e.target.value)}
-              required
-            />
-            {errors.date_added && (
-              <div className="error-message">{errors.date_added}</div>
-            )}
-          </div>
-
           {errors.submit && (
             <div className="error-message" style={{ textAlign: 'center', marginBottom: '20px' }}>
               {errors.submit}
