@@ -21,16 +21,16 @@ export const UserPuzzlePage: React.FC = () => {
         if (id) {
           const puzzleId = parseInt(id, 10);
           if (isNaN(puzzleId)) {
-            navigate('/puzzle');
+            navigate('/');
             return;
           }
           result = await UserPuzzleDatabaseService.getUserPuzzleById(puzzleId);
           if (!result) {
-            navigate('/puzzle');
+            navigate('/');
             return;
           }
         } else {
-          navigate('/puzzle');
+          navigate('/');
         }
         
         setCryptogram(result);

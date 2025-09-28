@@ -12,6 +12,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { SupportPage } from './pages/SupportPage';
 import { AboutPage } from './pages/AboutPage';
 import { AdminPage } from './pages/AdminPage';
+import { UserPuzzlePage } from './pages/UserPuzzlePage';
 import './styles/globals.css';
 
 // Create a client
@@ -39,6 +40,8 @@ function App() {
               <Route path="/" element={<MainPage />} />
               <Route path="/puzzle" element={<PuzzlePage />} />
               <Route path="/puzzle/:id" element={<PuzzlePage />} />
+              <Route path="/userpuzzle/:id" element={<UserPuzzlePage />} />
+              <Route path="/archive" element={<ArchivePage />} />
               <Route path="/archive" element={<ArchivePage />} />
               <Route path="/userarchive" element={<UserArchivePage />} />
               <Route path="/submit" element={<SubmissionPage />} />
