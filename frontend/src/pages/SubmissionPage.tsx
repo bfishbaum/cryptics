@@ -97,6 +97,8 @@ export const SubmissionPage: React.FC = () => {
     setSuccessMessage('');
 
     try {
+      const normalizedSolution = formData.solution.toLowerCase();
+
       // Get access token when we actually need it
       const accessToken = await getAccessToken();
 
@@ -108,7 +110,7 @@ export const SubmissionPage: React.FC = () => {
 
       await UserPuzzleDatabaseService.createUserPuzzle({
         puzzle: formData.puzzle,
-        solution: formData.solution,
+        solution: normalizedSolution,
         explanation: formData.explanation || undefined,
         source: Source.OFFICIAL,
         difficulty: formData.difficulty,
@@ -154,9 +156,10 @@ export const SubmissionPage: React.FC = () => {
     }
 
     try {
+      const normalizedSolution = formData.solution.toLowerCase();
       const params = encodeCryptogramToParams({
         puzzle: formData.puzzle,
-        solution: formData.solution,
+        solution: normalizedSolution,
         explanation: formData.explanation || undefined,
         source: Source.USER_SUBMITTED,
         difficulty: formData.difficulty
