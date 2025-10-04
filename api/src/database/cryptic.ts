@@ -30,7 +30,15 @@ export class CrypticDatabaseService {
 	static async getLatestCryptogram(): Promise<Cryptogram | null> {
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM cryptograms WHERE hidden = FALSE ORDER BY date_added DESC LIMIT 1'
+			`SELECT * FROM cryptograms 
+			WHERE hidden = FALSE 
+			ORDER BY 
+			  CASE 
+			    WHEN (date_added AT TIME ZONE 'America/Los_Angeles')::date = (NOW() AT TIME ZONE 'America/Los_Angeles')::date THEN 0 
+			    ELSE 1 
+			  END,
+			  id DESC 
+			LIMIT 1`
 		);
 		if (result.rows.length === 0) return null;
 		return {
