@@ -226,6 +226,35 @@ body {
   }
 }
 
+@media (orientation: landscape) {
+  body {
+    padding-left: 300px;
+  }
+
+  .hamburger-menu-fixed {
+    display: none;
+  }
+
+  .mobile-nav {
+    transform: translateX(0);
+    box-shadow: none;
+  }
+
+  .mobile-nav.open {
+    transform: translateX(0);
+  }
+
+  .menu-overlay {
+    display: none;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 480px) {
+  body {
+    padding-left: 280px;
+  }
+}
+
 .main-content {
   min-height: calc(100vh - 200px);
   display: flex;
