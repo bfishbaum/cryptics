@@ -13,6 +13,7 @@ import { SupportPage } from './pages/SupportPage';
 import { AboutPage } from './pages/AboutPage';
 import { AdminPage } from './pages/AdminPage';
 import { UserPuzzlePage } from './pages/UserPuzzlePage';
+import { SharedPuzzlePage } from './pages/SharedPuzzlePage';
 import './styles/globals.css';
 
 // Create a client
@@ -45,6 +46,7 @@ function App() {
               <Route path="/archive" element={<ArchivePage />} />
               <Route path="/userarchive" element={<UserArchivePage />} />
               <Route path="/submit" element={<SubmissionPage />} />
+              <Route path="/shared-puzzle" element={<SharedPuzzlePage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/support" element={<SupportPage />} />

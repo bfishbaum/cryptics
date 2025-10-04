@@ -353,6 +353,14 @@ body {
   border-color: #0056b3;
 }
 
+.btn-primary:disabled,
+.btn-primary:disabled:hover {
+  background-color: #adb5bd;
+  border-color: #adb5bd;
+  color: #6c757d !important;
+  cursor: not-allowed;
+}
+
 .btn-danger {
   background-color: #dc3545;
   border-color: #dc3545;

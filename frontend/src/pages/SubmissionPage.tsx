@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { UserPuzzleDatabaseService } from '../services/userPuzzles';
 import { Source } from '../types/cryptogram';
 import { validateSolution } from '../utils/validation';
 import { useAuth0 } from '@auth0/auth0-react';
+import { encodeCryptogramToParams } from '../utils/cryptogramShare';
 
 export const SubmissionPage: React.FC = () => {
-  const { isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup, loginWithRedirect } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
   const [formData, setFormData] = useState({
     puzzle: '',
@@ -17,6 +18,11 @@ export const SubmissionPage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [shareStatus, setShareStatus] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const sharedPuzzleBasePath = useMemo(() => (
+    import.meta.env.MODE === 'production' ? '/cryptics/shared-puzzle' : '/shared-puzzle'
+  ), []);
 
   // Helper function to get access token when needed
   const getAccessToken = async (): Promise<string | null> => {
@@ -78,6 +84,11 @@ export const SubmissionPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!isAuthenticated) {
+      setErrors({ submit: 'Please log in to submit puzzles.' });
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
@@ -113,6 +124,7 @@ export const SubmissionPage: React.FC = () => {
         date_added: new Date().toISOString().split('T')[0]
       });
       setErrors({});
+      setShareStatus(null);
     } catch {
       setErrors({ submit: 'Failed to submit puzzle. Please try again.' });
     } finally {
@@ -135,25 +147,34 @@ export const SubmissionPage: React.FC = () => {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="container">
-        <div className="white-box" style={{ textAlign: 'center', padding: '40px' }}>
-          <h1 className="page-title">Access Restricted</h1>
-          <p style={{ fontSize: '18px', marginBottom: '30px' }}>
-            You need to be signed in to submit and manage cryptograms.
-          </p>
-          <button
-            onClick={() => loginWithRedirect()}
-            className="btn btn-primary"
-            style={{ fontSize: '16px', padding: '12px 24px' }}
-          >
-            Sign In
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const handleShareLink = async () => {
+    if (!validateForm()) {
+      setShareStatus({ message: 'Fix the highlighted fields before creating a shareable link.', type: 'error' });
+      return;
+    }
+
+    try {
+      const params = encodeCryptogramToParams({
+        puzzle: formData.puzzle,
+        solution: formData.solution,
+        explanation: formData.explanation || undefined,
+        source: Source.USER_SUBMITTED,
+        difficulty: formData.difficulty
+      });
+
+      const shareUrl = `${window.location.origin}${sharedPuzzleBasePath}?${params.toString()}`;
+
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareStatus({ message: 'Shareable link copied to your clipboard!', type: 'success' });
+      } else {
+        setShareStatus({ message: `Shareable link: ${shareUrl}`, type: 'success' });
+      }
+    } catch (error) {
+      console.error('Failed to create share link', error);
+      setShareStatus({ message: 'Failed to create shareable link. Please try again.', type: 'error' });
+    }
+  };
 
   return (
     <div className="container">
@@ -250,15 +271,35 @@ export const SubmissionPage: React.FC = () => {
             </div>
           )}
 
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
               type="submit"
               className="btn btn-primary"
+              disabled={isSubmitting || !isAuthenticated}
+            >
+              {isAuthenticated ? (isSubmitting ? 'Submitting...' : 'Submit Cryptogram') : 'Please log in to submit puzzles'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleShareLink}
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Cryptogram'}
+              Create Shareable Link
             </button>
           </div>
+
+          {shareStatus && (
+            <div
+              style={{
+                marginTop: '16px',
+                textAlign: 'center',
+                color: shareStatus.type === 'success' ? '#155724' : '#dc3545'
+              }}
+            >
+              {shareStatus.message}
+            </div>
+          )}
         </form>
       </div>
     </div>
