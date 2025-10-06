@@ -28,11 +28,9 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const basename = import.meta.env.MODE === 'production' ? '/cryptics' : '';
-
   return (
     <QueryClientProvider client={queryClient}>
-      <Router basename={basename}>
+      <Router>
         <div className="App">
           <NavigationMenu />
           <Header />

@@ -51,7 +51,11 @@ export class CrypticDatabaseService {
 		const offset = (page - 1) * limit;
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM cryptograms WHERE hidden = FALSE ORDER BY date_added DESC LIMIT $1 OFFSET $2',
+			`SELECT * FROM cryptograms 
+			WHERE hidden = FALSE 
+			  AND (date_added AT TIME ZONE 'America/Los_Angeles')::date <= (NOW() AT TIME ZONE 'America/Los_Angeles')::date
+			ORDER BY date_added DESC, id DESC
+			LIMIT $1 OFFSET $2`,
 			[limit, offset]
 		);
 

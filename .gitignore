@@ -54,3 +54,4 @@ api/src/migrations/*
 
 # Claude
 .claude/
+.vercel

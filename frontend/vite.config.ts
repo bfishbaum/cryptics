@@ -5,9 +5,12 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   plugins: [react(), basicSsl()],
-  base: mode === 'production' ? '/cryptics/' : '/',
+  base: '/',
+  build: {
+    outDir: 'dist'
+  },
   test: {
     globals: true,
     environment: 'jsdom',
