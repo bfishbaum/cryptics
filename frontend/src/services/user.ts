@@ -44,4 +44,32 @@ export class UserService {
         : []
     };
   }
+
+  static async updateDisplayName(displayName: string, accessToken: string): Promise<string> {
+    const response = await fetch(buildUrl('/api/users/displayname'), {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ displayName }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => null);
+      const message = errorBody && typeof errorBody.error === 'string'
+        ? errorBody.error
+        : 'Failed to update display name';
+      throw new Error(message);
+    }
+
+    const data = await response.json();
+    if (data && typeof data.displayName === 'string') {
+      return data.displayName;
+    }
+
+    return displayName;
+  }
 }

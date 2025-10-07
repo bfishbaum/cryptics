@@ -10,6 +10,10 @@ export const ProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<UserProfileResponse | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
+  const [displayNameInput, setDisplayNameInput] = useState('');
+  const [displayNameSubmitting, setDisplayNameSubmitting] = useState(false);
+  const [displayNameError, setDisplayNameError] = useState<string | null>(null);
+  const [displayNameSuccess, setDisplayNameSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -46,12 +50,45 @@ export const ProfilePage: React.FC = () => {
     };
   }, [isAuthenticated, getAccessTokenSilently]);
 
+  useEffect(() => {
+    if (profile?.displayName) {
+      setDisplayNameInput(profile.displayName);
+    } else {
+      setDisplayNameInput('');
+    }
+  }, [profile?.displayName]);
+
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handleDisplayNameSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setDisplayNameSuccess(null);
+
+    const trimmedName = displayNameInput.trim();
+    if (!trimmedName) {
+      setDisplayNameError('Display name is required');
+      return;
+    }
+
+    try {
+      setDisplayNameSubmitting(true);
+      setDisplayNameError(null);
+      const accessToken = await getAccessTokenSilently();
+      const updatedName = await UserService.updateDisplayName(trimmedName, accessToken);
+      setProfile(prev => (prev ? { ...prev, displayName: updatedName } : prev));
+      setDisplayNameInput(updatedName);
+      setDisplayNameSuccess('Display name updated successfully.');
+    } catch (error) {
+      setDisplayNameError(error instanceof Error ? error.message : 'Failed to update display name.');
+    } finally {
+      setDisplayNameSubmitting(false);
+    }
   };
 
   if (isLoading) {
@@ -164,6 +201,56 @@ export const ProfilePage: React.FC = () => {
                 {profileLoading ? 'Loading...' : profile?.displayName || 'Not set'}
               </div>
             </div>
+
+            <form onSubmit={handleDisplayNameSubmit} style={{ width: '100%', maxWidth: '600px', marginTop: '16px' }}>
+              <div className="form-group" style={{ marginBottom: '12px' }}>
+                <label htmlFor="display-name-input" className="form-label">Update Display Name</label>
+                <input
+                  id="display-name-input"
+                  type="text"
+                  className="form-input"
+                  value={displayNameInput}
+                  onChange={(e) => {
+                    setDisplayNameInput(e.target.value);
+                    if (displayNameError) {
+                      setDisplayNameError(null);
+                    }
+                  }}
+                  placeholder="Enter a new display name"
+                  disabled={displayNameSubmitting || profileLoading}
+                />
+              </div>
+
+              {displayNameError && (
+                <div className="error-message" style={{ marginBottom: '12px', textAlign: 'center' }}>
+                  {displayNameError}
+                </div>
+              )}
+
+              {displayNameSuccess && (
+                <div style={{
+                  background: '#d4edda',
+                  color: '#155724',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #c3e6cb',
+                  textAlign: 'center',
+                  marginBottom: '12px'
+                }}>
+                  {displayNameSuccess}
+                </div>
+              )}
+
+              <div style={{ textAlign: 'center' }}>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={displayNameSubmitting || profileLoading}
+                >
+                  {displayNameSubmitting ? 'Saving...' : 'Save Display Name'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
