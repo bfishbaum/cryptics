@@ -4,7 +4,6 @@
  */
 
 import { z } from 'zod';
-import httpClient from '../services/httpClient';
 import type { User } from '../types/user';
 
 // Auth.js-inspired configuration
@@ -81,6 +80,14 @@ class Auth {
 
   constructor(config: AuthConfig) {
     this.config = config;
+  }
+
+  private buildUrl(path: string) {
+    try {
+      return new URL(path, this.config.baseUrl).toString();
+    } catch {
+      return `${this.config.baseUrl}${path}`;
+    }
   }
 
   // Get CSRF token from Auth.js
@@ -170,16 +177,28 @@ class Auth {
   async signUp(credentials: any): Promise<{ ok: boolean; error?: string; user?: User }> {
     try {
       const validatedCredentials = signUpSchema.parse(credentials);
-      
-      const response = await httpClient.post('/auth/signup', validatedCredentials, {
-        requiresAuth: false
+
+      const fetchResponse = await fetch(this.buildUrl('/auth/signup'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(validatedCredentials),
+        credentials: 'include',
       });
-      
-      if (response.success) {
-        return { ok: true, user: response.data.user };
-      } else {
-        return { ok: false, error: response.error?.message || 'Sign up failed' };
+
+      const data = await fetchResponse.json().catch(() => null);
+
+      if (fetchResponse.ok && data && typeof data === 'object' && 'user' in data) {
+        return { ok: true, user: (data as { user: User }).user };
       }
+
+      const message = data && typeof data === 'object' && 'error' in data && typeof (data as { error: unknown }).error === 'string'
+        ? (data as { error: string }).error
+        : 'Sign up failed';
+
+      return { ok: false, error: message };
     } catch (error) {
       if (error instanceof z.ZodError) {
         return { ok: false, error: error.issues[0].message };
@@ -224,17 +243,28 @@ class Auth {
   // Auth.js-inspired getSession method
   async getSession(): Promise<Session | null> {
     try {
-      const response = await httpClient.get('/auth/session', {
-        requiresAuth: false
+      const fetchResponse = await fetch(this.buildUrl('/auth/session'), {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        credentials: 'include',
       });
 
-      if (response.success && response.data?.user) {
-        this.currentSession = response.data;
-        return response.data;
-      } else {
+      if (!fetchResponse.ok) {
         this.currentSession = null;
         return null;
       }
+
+      const data = await fetchResponse.json().catch(() => null);
+
+      if (data && typeof data === 'object' && 'user' in data) {
+        this.currentSession = data as Session;
+        return this.currentSession;
+      }
+
+      this.currentSession = null;
+      return null;
     } catch (error) {
       console.error('Failed to get session:', error);
       this.currentSession = null;
