@@ -70,8 +70,8 @@ router.post('/submit', jwtCheck, extractUserId, async (req, res) => {
 		if (!puzzleData.puzzle || !puzzleData.solution) {
 			return res.status(400).json({ error: 'Puzzle and solution are required' });
 		}
-		const display_name: string = await UserDatabaseService.getDisplayNameByUserId(req.body.user_id);
-		const puzzle = await UserPuzzleDatabaseService.createUserPuzzle(puzzleData, req.body.user_id, display_name || 'Anonymous');
+		const display_name = await UserDatabaseService.ensureUserExistsWithDefault(req.body.user_id);
+		const puzzle = await UserPuzzleDatabaseService.createUserPuzzle(puzzleData, req.body.user_id, display_name);
 		return res.status(201).json(puzzle);
 	} catch (error) {
 		console.error('Error submitting puzzle:', error);

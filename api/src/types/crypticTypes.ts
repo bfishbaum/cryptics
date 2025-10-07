@@ -24,3 +24,9 @@ export interface User {
 	auth0_user_id: string;
 	display_name: string;
 }
+
+export interface UserProfile {
+	userId: string;
+	displayName: string;
+	puzzles: Cryptogram[];
+}

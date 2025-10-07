@@ -44,6 +44,19 @@ export class UserPuzzleDatabaseService {
 		}));
 	}
 
+	static async getAllUserPuzzlesByUser(user_id: string): Promise<Cryptogram[]> {
+		const pool = getPool();
+		const result = await pool.query(
+			'SELECT * FROM user_puzzles WHERE creator_id = $1 ORDER BY date_added DESC',
+			[user_id]
+		);
+
+		return result.rows.map((row: any) => ({
+			...row,
+			date_added: new Date(row.date_added)
+		}));
+	}
+
 
 	static async createUserPuzzle(cryptogram: CryptogramInput, user_id: string, display_name: string): Promise<Cryptogram> {
 		const pool = getPool();
@@ -75,7 +88,7 @@ export class UserPuzzleDatabaseService {
 			[user_id, new_name]
 		);
 
-		return result.rows.length > 0;
+		return result.rowCount > 0;
 	}
 
 	static async deleteUserPuzzle(id: number, user_id:number): Promise<boolean> {
