@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CrypticDatabaseService } from '../services/cryptics';
+import { UserPuzzleDatabaseService } from '../services/userPuzzles';
 import { Source } from '../types/cryptogram';
 import { validateSolution } from '../utils/validation';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -20,6 +21,9 @@ export const AdminPage: React.FC = () => {
   const [deleteId, setDeleteId] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
+  const [userDeleteId, setUserDeleteId] = useState('');
+  const [isUserDeleting, setIsUserDeleting] = useState(false);
+  const [userDeleteSuccessMessage, setUserDeleteSuccessMessage] = useState('');
 
   // Helper function to get access token when needed
   const getAccessToken = async (): Promise<string | null> => {
@@ -177,6 +181,42 @@ export const AdminPage: React.FC = () => {
     }
   };
 
+  const handleUserPuzzleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const id = parseInt(userDeleteId);
+    if (isNaN(id) || id <= 0) {
+      setErrors(prev => ({ ...prev, userDeleteId: 'Please enter a valid ID number' }));
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete user submitted puzzle with ID ${id}? This action cannot be undone.`)) {
+      return;
+    }
+
+    setIsUserDeleting(true);
+    setUserDeleteSuccessMessage('');
+    setErrors(prev => ({ ...prev, userDeleteId: '', userDeleteSubmit: '' }));
+
+    try {
+      const accessToken = await getAccessToken();
+
+      if (!accessToken) {
+        setErrors(prev => ({ ...prev, userDeleteSubmit: 'Failed to get access token. Please try logging in again.' }));
+        return;
+      }
+
+      await UserPuzzleDatabaseService.deleteUserPuzzle(id, accessToken);
+      setUserDeleteSuccessMessage(`User submitted puzzle with ID ${id} deleted successfully!`);
+      setUserDeleteId('');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete user submitted puzzle';
+      setErrors(prev => ({ ...prev, userDeleteSubmit: errorMessage }));
+    } finally {
+      setIsUserDeleting(false);
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="container">
@@ -199,7 +239,7 @@ export const AdminPage: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="white-box">
+      <div className="white-box" style={{ alignItems: 'stretch' }}>
         <h1 className="page-title">Submit New Cryptic</h1>
 
         {successMessage && (
@@ -215,7 +255,7 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <form onSubmit={handleSubmit} style={{ maxWidth: '600px', margin: '0 auto', width: '100%' }}>
           <div className="form-group">
             <label htmlFor="puzzle" className="form-label">
               Puzzle *
@@ -322,7 +362,7 @@ export const AdminPage: React.FC = () => {
       </div>
 
       {/* Delete Section */}
-      <div className="white-box" style={{ marginTop: '40px' }}>
+      <div className="white-box" style={{ marginTop: '40px', alignItems: 'stretch' }}>
         <h2 className="page-title" style={{ fontSize: '24px', marginBottom: '20px' }}>Delete Cryptogram</h2>
 
         {deleteSuccessMessage && (
@@ -338,7 +378,7 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleDelete} style={{ maxWidth: '400px', margin: '0 auto' }}>
+        <form onSubmit={handleDelete} style={{ maxWidth: '600px', margin: '0 auto', width: '100%' }}>
           <div className="form-group">
             <label htmlFor="deleteId" className="form-label">
               Cryptogram ID *
@@ -381,6 +421,70 @@ export const AdminPage: React.FC = () => {
               disabled={isDeleting}
             >
               {isDeleting ? 'Deleting...' : 'Delete Cryptogram'}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="white-box" style={{ marginTop: '40px', alignItems: 'stretch' }}>
+        <h2 className="page-title" style={{ fontSize: '24px', marginBottom: '20px' }}>Delete User Submitted Puzzle</h2>
+
+        {userDeleteSuccessMessage && (
+          <div style={{
+            background: '#d4edda',
+            color: '#155724',
+            padding: '15px',
+            borderRadius: '6px',
+            marginBottom: '20px',
+            border: '1px solid #c3e6cb'
+          }}>
+            {userDeleteSuccessMessage}
+          </div>
+        )}
+
+        <form onSubmit={handleUserPuzzleDelete} style={{ maxWidth: '600px', margin: '0 auto', width: '100%' }}>
+          <div className="form-group">
+            <label htmlFor="userDeleteId" className="form-label">
+              User Puzzle ID *
+            </label>
+            <input
+              type="number"
+              id="userDeleteId"
+              className="form-input"
+              value={userDeleteId}
+              onChange={(e) => {
+                setUserDeleteId(e.target.value);
+                if (errors.userDeleteId) {
+                  setErrors(prev => ({ ...prev, userDeleteId: '' }));
+                }
+              }}
+              placeholder="Enter ID of user submitted puzzle to delete"
+              min="1"
+              required
+            />
+            {errors.userDeleteId && (
+              <div className="error-message">{errors.userDeleteId}</div>
+            )}
+          </div>
+
+          {errors.userDeleteSubmit && (
+            <div className="error-message" style={{ textAlign: 'center', marginBottom: '20px' }}>
+              {errors.userDeleteSubmit}
+            </div>
+          )}
+
+          <div style={{ textAlign: 'center' }}>
+            <button
+              type="submit"
+              className="btn"
+              style={{
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: '1px solid #dc3545'
+              }}
+              disabled={isUserDeleting}
+            >
+              {isUserDeleting ? 'Deleting...' : 'Delete User Puzzle'}
             </button>
           </div>
         </form>

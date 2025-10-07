@@ -207,7 +207,7 @@ export const SubmissionPage: React.FC = () => {
               className="form-textarea"
               value={formData.puzzle}
               onChange={(e) => handleInputChange('puzzle', e.target.value)}
-              placeholder="Enter the encrypted puzzle text"
+              placeholder="Enter the puzzle text (shown to solvers)"
               required
             />
             {errors.puzzle && (

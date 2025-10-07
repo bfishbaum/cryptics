@@ -1,33 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { CryptogramGame } from '../components/CryptogramGame';
-import { CrypticDatabaseService } from '../services/cryptics';
-import type { Cryptogram } from '../types/cryptogram';
+import { useLatestOfficialPuzzle } from '../hooks/usePuzzles';
 import '../styles/CryptogramGame.css';
 
 export const MainPage: React.FC = () => {
-  const [cryptogram, setCryptogram] = useState<Cryptogram | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: cryptogram, isLoading, isError } = useLatestOfficialPuzzle();
 
-  useEffect(() => {
-    const loadLatestCryptogram = async () => {
-      try {
-        setLoading(true);
-        const latest = await CrypticDatabaseService.getLatestCryptogram();
-        setCryptogram(latest);
-        setError(null);
-      } catch (err) {
-        setError('Failed to load cryptogram');
-        console.error('Error loading cryptogram:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadLatestCryptogram();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container">
         <div className="loading">Loading today's cryptic crossword...</div>
@@ -35,13 +14,13 @@ export const MainPage: React.FC = () => {
     );
   }
 
-  if (error || !cryptogram) {
+  if (isError || !cryptogram) {
     return (
       <div className="container">
         <div className="white-box">
           <h1 className="page-title">Error</h1>
           <p style={{ textAlign: 'center', color: '#dc3545' }}>
-            {error || 'No cryptogram available'}
+            {'Failed to load cryptogram'}
           </p>
         </div>
       </div>

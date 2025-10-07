@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -40,9 +40,53 @@ export const Header: React.FC = () => {
   );
 };
 
+const ADMIN_REQUIRED_SCOPES = ['delete:cryptic', 'write:new_cryptic'];
+
 export const NavigationMenu: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [hasAdminAccess, setHasAdminAccess] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkAdminAccess = async () => {
+      if (!isAuthenticated) {
+        if (isMounted) {
+          setHasAdminAccess(false);
+        }
+        return;
+      }
+
+      try {
+        const tokenResponse = await getAccessTokenSilently({
+          detailedResponse: true,
+          cacheMode: 'on',
+          authorizationParams: {
+            audience: 'cryptic_api_id',
+            scope: ADMIN_REQUIRED_SCOPES.join(' '),
+          },
+        }) as { access_token: string; scope?: string };
+
+        const scopeSet = new Set((tokenResponse.scope ?? '').split(' ').filter(Boolean));
+        const hasAllScopes = ADMIN_REQUIRED_SCOPES.every(scope => scopeSet.has(scope));
+        if (isMounted) {
+          setHasAdminAccess(hasAllScopes);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setHasAdminAccess(false);
+        }
+        console.warn('Failed to determine admin access', error);
+      }
+    };
+
+    checkAdminAccess();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -71,6 +115,9 @@ export const NavigationMenu: React.FC = () => {
           <Link to="/archive" className="nav-link" onClick={closeMenu}>Official Archive</Link>
           <Link to="/userarchive" className="nav-link" onClick={closeMenu}>User Archive</Link>
           <Link to="/submit" className="nav-link" onClick={closeMenu}>Submit</Link>
+          {hasAdminAccess && (
+            <Link to="/admin" className="nav-link" onClick={closeMenu}>Admin</Link>
+          )}
         </div>
 
         <div className="nav-section">

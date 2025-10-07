@@ -1,44 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { UserPuzzleDatabaseService } from '../services/userPuzzles';
-import type { Cryptogram } from '../types/cryptogram';
 import { isUserPuzzleCompleted } from '../utils/puzzleProgress';
+import { useUserArchive } from '../hooks/usePuzzles';
+import type { Cryptogram } from '../types/cryptogram';
 
 // TODO: Implement better pagination (infinite scroll?)
 
 export const UserArchivePage: React.FC = () => {
-  const [cryptograms, setCryptograms] = useState<Cryptogram[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
+  const archiveQuery = useUserArchive(20);
 
-  useEffect(() => {
-    const loadCryptograms = async () => {
-      try {
-        setLoading(true);
-        const results = await UserPuzzleDatabaseService.getLatestUserPuzzles(page, 20);
+  const cryptograms = useMemo<Cryptogram[]>(() => {
+    const pages = (archiveQuery.data?.pages ?? []) as Cryptogram[][];
+    return pages.flatMap((page) => page);
+  }, [archiveQuery.data]);
 
-        if (page === 1) {
-          setCryptograms(results);
-        } else {
-          setCryptograms(prev => [...prev, ...results]);
-        }
-      } catch (err) {
-        setError('Failed to load cryptograms');
-        console.error('Error loading cryptograms:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadCryptograms();
-  }, [page]);
-
-  const loadMore = () => {
-    if (!loading) {
-      setPage(prev => prev + 1);
-    }
-  };
+  const initialLoading = archiveQuery.isLoading && !archiveQuery.isFetched;
 
   // const formatDate = (date: Date) => {
   //   return new Date(date).toLocaleDateString('en-US', {
@@ -48,7 +24,7 @@ export const UserArchivePage: React.FC = () => {
   //   });
   // };
 
-  if (loading && page === 1) {
+  if (initialLoading) {
     return (
       <div className="container">
         <div className="loading">Loading puzzles...</div>
@@ -56,13 +32,13 @@ export const UserArchivePage: React.FC = () => {
     );
   }
 
-  if (error && cryptograms.length === 0) {
+  if (archiveQuery.isError && cryptograms.length === 0) {
     return (
       <div className="container">
         <div className="white-box">
           <h1 className="page-title">Error</h1>
           <p style={{ textAlign: 'center', color: '#dc3545' }}>
-            {error}
+            {'Failed to load cryptograms'}
           </p>
         </div>
       </div>
@@ -109,11 +85,11 @@ export const UserArchivePage: React.FC = () => {
 
             <div style={{ textAlign: 'center', marginTop: '30px' }}>
               <button
-                onClick={loadMore}
-                disabled={loading}
+                onClick={() => archiveQuery.fetchNextPage()}
+                disabled={archiveQuery.isFetchingNextPage || !archiveQuery.hasNextPage}
                 className="btn btn-primary"
               >
-                {loading ? 'Loading...' : 'Load More'}
+                {archiveQuery.isFetchingNextPage ? 'Loading...' : archiveQuery.hasNextPage ? 'Load More' : 'No More Puzzles'}
               </button>
             </div>
           </>

@@ -14,6 +14,7 @@ import { AboutPage } from './pages/AboutPage';
 import { AdminPage } from './pages/AdminPage';
 import { UserPuzzlePage } from './pages/UserPuzzlePage';
 import { SharedPuzzlePage } from './pages/SharedPuzzlePage';
+import { LoginRedirectPage } from './pages/LoginRedirectPage';
 import './styles/globals.css';
 
 // Create a client
@@ -50,6 +51,7 @@ function App() {
               <Route path="/support" element={<SupportPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/login" element={<LoginRedirectPage />} />
             </Routes>
           </main>
           <CookieConsent />

@@ -57,6 +57,24 @@ export class UserPuzzleDatabaseService {
     };
   }
 
+  static async deleteUserPuzzle(id: number, accessToken: string): Promise<void> {
+    const response = await fetch(`${USER_PUZZLE_API_BASE_URL}/puzzles/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    if (response.status === 404) {
+      throw new Error('User submitted puzzle not found');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to delete user submitted puzzle');
+    }
+  }
+
   //   static async deleteCryptogram(id: number, accessToken: string): Promise<void> {
   //     const response = await fetch(`${USER_PUZZLE_API_BASE_URL}/cryptograms/${id}`, {
   //       method: 'DELETE',

@@ -1,52 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CryptogramGame } from '../components/CryptogramGame';
-import { UserPuzzleDatabaseService } from '../services/userPuzzles';
-import type { Cryptogram } from '../types/cryptogram';
+import { useUserPuzzle } from '../hooks/usePuzzles';
 import '../styles/CryptogramGame.css';
 
 export const UserPuzzlePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [cryptogram, setCryptogram] = useState<Cryptogram | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const puzzleId = useMemo(() => {
+    if (!id) {
+      return undefined;
+    }
+    const parsed = Number.parseInt(id, 10);
+    return Number.isNaN(parsed) ? NaN : parsed;
+  }, [id]);
+
+  const hasValidId = typeof puzzleId === 'number' && !Number.isNaN(puzzleId);
 
   useEffect(() => {
-    const loadCryptogram = async () => {
-      try {
-        setLoading(true);
-        let result: Cryptogram | null = null;
-        
-        if (id) {
-          const puzzleId = parseInt(id, 10);
-          if (isNaN(puzzleId)) {
-            navigate('/');
-            return;
-          }
-          result = await UserPuzzleDatabaseService.getUserPuzzleById(puzzleId);
-          if (!result) {
-            navigate('/');
-            return;
-          }
-        } else {
-          navigate('/');
-        }
-        
-        setCryptogram(result);
-        setError(null);
-      } catch (err) {
-        setError('Failed to load cryptogram');
-        console.error('Error loading cryptogram:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!id || !hasValidId) {
+      navigate('/', { replace: true });
+    }
+  }, [id, hasValidId, navigate]);
 
-    loadCryptogram();
-  }, [id, navigate]);
+  const puzzleQuery = useUserPuzzle(hasValidId ? puzzleId : undefined, { enabled: Boolean(id) && hasValidId });
 
-  if (loading) {
+  useEffect(() => {
+    if (id && hasValidId && puzzleQuery.isFetched && !puzzleQuery.data) {
+      navigate('/', { replace: true });
+    }
+  }, [id, hasValidId, puzzleQuery.data, puzzleQuery.isFetched, navigate]);
+
+  if (puzzleQuery.isLoading) {
     return (
       <div className="container">
         <div className="loading">Loading cryptic clue...</div>
@@ -54,13 +40,13 @@ export const UserPuzzlePage: React.FC = () => {
     );
   }
 
-  if (error || !cryptogram) {
+  if (puzzleQuery.isError || !puzzleQuery.data) {
     return (
       <div className="container">
         <div className="white-box">
           <h1 className="page-title">Error</h1>
           <p style={{ textAlign: 'center', color: '#dc3545' }}>
-            {error || 'Puzzle not found'}
+            {'Puzzle not found'}
           </p>
         </div>
       </div>
@@ -73,7 +59,7 @@ export const UserPuzzlePage: React.FC = () => {
         <h1 className="page-title">
           {id ? `Cryptic Crossword #${id}` : 'Latest Cryptic Crossword'}
         </h1>
-        <CryptogramGame cryptogram={cryptogram} puzzleType="user" />
+        <CryptogramGame cryptogram={puzzleQuery.data} puzzleType="user" />
       </div>
     </div>
   );
