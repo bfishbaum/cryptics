@@ -14,6 +14,7 @@ export const ProfilePage: React.FC = () => {
   const [displayNameSubmitting, setDisplayNameSubmitting] = useState(false);
   const [displayNameError, setDisplayNameError] = useState<string | null>(null);
   const [displayNameSuccess, setDisplayNameSuccess] = useState<string | null>(null);
+  const [isEditingDisplayName, setIsEditingDisplayName] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -84,11 +85,28 @@ export const ProfilePage: React.FC = () => {
       setProfile(prev => (prev ? { ...prev, displayName: updatedName } : prev));
       setDisplayNameInput(updatedName);
       setDisplayNameSuccess('Display name updated successfully.');
+      setIsEditingDisplayName(false);
     } catch (error) {
       setDisplayNameError(error instanceof Error ? error.message : 'Failed to update display name.');
     } finally {
       setDisplayNameSubmitting(false);
     }
+  };
+
+  const handleEditToggle = () => {
+    if (isEditingDisplayName) {
+      setIsEditingDisplayName(false);
+      setDisplayNameError(null);
+      setDisplayNameSuccess(null);
+      if (profile?.displayName) {
+        setDisplayNameInput(profile.displayName);
+      }
+      return;
+    }
+
+    setIsEditingDisplayName(true);
+    setDisplayNameError(null);
+    setDisplayNameSuccess(null);
   };
 
   if (isLoading) {
@@ -192,65 +210,109 @@ export const ProfilePage: React.FC = () => {
             )}
             <div className="form-group">
               <label className="form-label">Display Name</label>
-              <div style={{
-                padding: '12px',
-                border: '1px solid #000',
-                borderRadius: '6px',
-                backgroundColor: '#f8f9fa'
-              }}>
-                {profileLoading ? 'Loading...' : profile?.displayName || 'Not set'}
+              <div style={{ position: 'relative' }}>
+                <div style={{
+                  padding: '12px',
+                  border: '1px solid #000',
+                  borderRadius: '6px',
+                  backgroundColor: '#f8f9fa',
+                  width: '100%',
+                  paddingRight: '56px'
+                }}>
+                  {profileLoading ? 'Loading...' : profile?.displayName || 'Not set'}
+                </div>
+                <button
+                  type="button"
+                  onClick={handleEditToggle}
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: '8px',
+                    transform: 'translateY(-50%)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '6px',
+                    border: '2px solid #000',
+                    backgroundColor: '#f8f9fa',
+                    fontSize: '18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: profileLoading ? 'not-allowed' : 'pointer'
+                  }}
+                  disabled={profileLoading}
+                  aria-label={isEditingDisplayName ? 'Cancel editing display name' : 'Edit display name'}
+                >
+                  {isEditingDisplayName ? '✕' : '✎'}
+                </button>
               </div>
             </div>
 
-            <form onSubmit={handleDisplayNameSubmit} style={{ width: '100%', maxWidth: '600px', marginTop: '16px' }}>
-              <div className="form-group" style={{ marginBottom: '12px' }}>
-                <label htmlFor="display-name-input" className="form-label">Update Display Name</label>
-                <input
-                  id="display-name-input"
-                  type="text"
-                  className="form-input"
-                  value={displayNameInput}
-                  onChange={(e) => {
-                    setDisplayNameInput(e.target.value);
-                    if (displayNameError) {
-                      setDisplayNameError(null);
-                    }
-                  }}
-                  placeholder="Enter a new display name"
-                  disabled={displayNameSubmitting || profileLoading}
-                />
+            {displayNameSuccess && !isEditingDisplayName && (
+              <div style={{
+                background: '#d4edda',
+                color: '#155724',
+                padding: '12px',
+                borderRadius: '6px',
+                border: '1px solid #c3e6cb',
+                textAlign: 'center',
+                marginBottom: '12px'
+              }}>
+                {displayNameSuccess}
               </div>
+            )}
 
-              {displayNameError && (
-                <div className="error-message" style={{ marginBottom: '12px', textAlign: 'center' }}>
-                  {displayNameError}
+            {isEditingDisplayName && (
+              <form onSubmit={handleDisplayNameSubmit} style={{ width: '100%', maxWidth: '600px', marginTop: '16px' }}>
+                <div className="form-group" style={{ marginBottom: '12px' }}>
+                  <label htmlFor="display-name-input" className="form-label">Update Display Name</label>
+                  <input
+                    id="display-name-input"
+                    type="text"
+                    className="form-input"
+                    value={displayNameInput}
+                    onChange={(e) => {
+                      setDisplayNameInput(e.target.value);
+                      if (displayNameError) {
+                        setDisplayNameError(null);
+                      }
+                    }}
+                    placeholder="Enter a new display name"
+                    disabled={displayNameSubmitting || profileLoading}
+                  />
                 </div>
-              )}
 
-              {displayNameSuccess && (
-                <div style={{
-                  background: '#d4edda',
-                  color: '#155724',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  border: '1px solid #c3e6cb',
-                  textAlign: 'center',
-                  marginBottom: '12px'
-                }}>
-                  {displayNameSuccess}
+                {displayNameError && (
+                  <div className="error-message" style={{ marginBottom: '12px', textAlign: 'center' }}>
+                    {displayNameError}
+                  </div>
+                )}
+
+                {displayNameSuccess && (
+                  <div style={{
+                    background: '#d4edda',
+                    color: '#155724',
+                    padding: '12px',
+                    borderRadius: '6px',
+                    border: '1px solid #c3e6cb',
+                    textAlign: 'center',
+                    marginBottom: '12px'
+                  }}>
+                    {displayNameSuccess}
+                  </div>
+                )}
+
+                <div style={{ textAlign: 'center' }}>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={displayNameSubmitting || profileLoading}
+                  >
+                    {displayNameSubmitting ? 'Saving...' : 'Save Display Name'}
+                  </button>
                 </div>
-              )}
-
-              <div style={{ textAlign: 'center' }}>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={displayNameSubmitting || profileLoading}
-                >
-                  {displayNameSubmitting ? 'Saving...' : 'Save Display Name'}
-                </button>
-              </div>
-            </form>
+              </form>
+            )}
           </div>
         </div>
       </div>

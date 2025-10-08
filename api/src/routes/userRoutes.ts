@@ -50,21 +50,20 @@ router.get('/profile', jwtCheck, extractUserId, async (req, res) => {
 			return res.status(401).json({ error: 'Unauthorized: missing user context' });
 		}
 
-		const existingUser = await UserDatabaseService.getUserById(userId);
+		let existingUser = await UserDatabaseService.getUserById(userId);
 		const puzzles = await UserPuzzleDatabaseService.getAllUserPuzzlesByUser(userId);
 
 		if (!existingUser) {
-			const defaultProfile: UserProfile = {
-				userId,
-				displayName: 'Not set',
-				puzzles: []
+			const defaultDisplayName = await UserDatabaseService.createUserWithDefaultDisplayName(userId);
+			existingUser = {
+				id: userId,
+				display_name: defaultDisplayName
 			};
-			return res.status(200).json(defaultProfile);
 		}
 
 		const profile: UserProfile = {
 			userId,
-			displayName: existingUser.display_name || 'Not set',
+			displayName: existingUser.display_name,
 			puzzles
 		};
 

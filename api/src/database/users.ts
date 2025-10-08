@@ -51,7 +51,7 @@ export class UserDatabaseService {
 
 	private static generateDefaultDisplayName(): string {
 		const random = Math.random().toString(36).substring(2, 8);
-		return `puzzleperson${random}`;
+		return `puzzleperson_${random}`;
 	}
 
 	static async ensureUserExistsWithDefault(user_id: string): Promise<string> {
@@ -65,6 +65,16 @@ export class UserDatabaseService {
 			return existingUser.rows[0].display_name;
 		}
 
+		const defaultDisplayName = UserDatabaseService.generateDefaultDisplayName();
+		const inserted = await pool.query(
+			`INSERT INTO users (id, display_name) VALUES ($1, $2) RETURNING display_name`,
+			[user_id, defaultDisplayName]
+		);
+		return inserted.rows[0].display_name;
+	}
+
+	static async createUserWithDefaultDisplayName(user_id: string): Promise<string> {
+		const pool = getPool();
 		const defaultDisplayName = UserDatabaseService.generateDefaultDisplayName();
 		const inserted = await pool.query(
 			`INSERT INTO users (id, display_name) VALUES ($1, $2) RETURNING display_name`,

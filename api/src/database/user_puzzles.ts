@@ -12,7 +12,7 @@ export class UserPuzzleDatabaseService {
 		if (result.rows.length === 0) return null;
 		return {
 			...result.rows[0],
-			date_added: new Date(result.rows[0].date_added)
+			date_added: new Date(result.rows[0].created_at)
 		};
 	}
 
@@ -26,7 +26,7 @@ export class UserPuzzleDatabaseService {
 
 		return result.rows.map((row: any) => ({
 			...row,
-			date_added: new Date(row.date_added)
+			date_added: new Date(row.created_at)
 		}));
 	}
 
@@ -34,26 +34,26 @@ export class UserPuzzleDatabaseService {
 		const offset = (page - 1) * limit;
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM user_puzzles WHERE hidden = FALSE and private = FALSE and creator_id = $3 ORDER BY date_added DESC LIMIT $1 OFFSET $2',
+			'SELECT * FROM user_puzzles WHERE hidden = FALSE and private = FALSE and creator_id = $3 ORDER BY created_at DESC LIMIT $1 OFFSET $2',
 			[limit, offset, user_id]
 		);
 
 		return result.rows.map((row: any) => ({
 			...row,
-			date_added: new Date(row.date_added)
+			date_added: new Date(row.created_at)
 		}));
 	}
 
 	static async getAllUserPuzzlesByUser(user_id: string): Promise<Cryptogram[]> {
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM user_puzzles WHERE creator_id = $1 ORDER BY date_added DESC',
+			'SELECT * FROM user_puzzles WHERE creator_id = $1 ORDER BY created_at DESC',
 			[user_id]
 		);
 
 		return result.rows.map((row: any) => ({
 			...row,
-			date_added: new Date(row.date_added)
+			date_added: new Date(row.created_at)
 		}));
 	}
 
@@ -77,7 +77,7 @@ export class UserPuzzleDatabaseService {
 
 		return {
 			...result.rows[0],
-			date_added: new Date(result.rows[0].date_added)
+			date_added: new Date(result.rows[0].created_at)
 		};
 	}
 
