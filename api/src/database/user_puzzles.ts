@@ -111,6 +111,7 @@ export class UserPuzzleDatabaseService {
 	}
 
 	static async deleteUserPuzzleAdmin(id: number): Promise<boolean> {
+		console.log('Admin deleting puzzle', id);
 		const pool = getPool();
 		const result = await pool.query(
 			'UPDATE user_puzzles SET hidden = TRUE WHERE id = $1 AND hidden = FALSE RETURNING id',

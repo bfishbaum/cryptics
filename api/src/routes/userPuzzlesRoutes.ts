@@ -108,10 +108,11 @@ router.delete('/puzzles/:id', jwtCheck, extractUserId, async (req, res) => {
 	}
 });
 
-router.delete('/admin/puzzles/:id', jwtCheck, checkPermissionsAny(['delete:cryptic']), async (req, res) => {
+router.delete('/admin/puzzles/:id', jwtCheck, checkPermissionsAny(['admin']), async (req, res) => {
 	try {
 		const puzzle_id = parseInt(req.params.id);
 
+		console.log('Admin endpoint to delete puzzle', puzzle_id);
 		const deleted = await UserPuzzleDatabaseService.deleteUserPuzzleAdmin(puzzle_id);
 
 		if (!deleted) {
