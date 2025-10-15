@@ -1,5 +1,6 @@
 import { getPool } from './init.js';
 import { type Cryptogram, type CryptogramInput } from '../types/crypticTypes.js';
+import { sanitizePuzzleText, sanitizeExplanation, sanitizeDisplayName } from '../utils/sanitization.js';
 
 export class UserPuzzleDatabaseService {
 	static async getUserPuzzleById(id: number): Promise<Cryptogram | null> {
@@ -60,16 +61,23 @@ export class UserPuzzleDatabaseService {
 
 	static async createUserPuzzle(cryptogram: CryptogramInput, user_id: string, display_name: string): Promise<Cryptogram> {
 		const pool = getPool();
+
+		// Sanitize all user inputs to prevent XSS
+		const sanitizedPuzzle = sanitizePuzzleText(cryptogram.puzzle);
+		const sanitizedSolution = sanitizePuzzleText(cryptogram.solution);
+		const sanitizedExplanation = cryptogram.explanation ? sanitizeExplanation(cryptogram.explanation) : null;
+		const sanitizedDisplayName = sanitizeDisplayName(display_name);
+
 		const result = await pool.query(
-			`INSERT INTO user_puzzles (creator_id, puzzle, solution, explanation, creator_name, difficulty, private) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+			`INSERT INTO user_puzzles (creator_id, puzzle, solution, explanation, creator_name, difficulty, private)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
 			[
 				user_id,
-				cryptogram.puzzle,
-				cryptogram.solution,
-				cryptogram.explanation,
-				display_name,
+				sanitizedPuzzle,
+				sanitizedSolution,
+				sanitizedExplanation,
+				sanitizedDisplayName,
 				cryptogram.difficulty,
 				false // New puzzles are public by default
 			]
@@ -83,9 +91,10 @@ export class UserPuzzleDatabaseService {
 
 	static async updateDisplayNames(user_id: string, new_name: string): Promise<boolean> {
 		const pool = getPool();
+		const sanitizedName = sanitizeDisplayName(new_name);
 		const result = await pool.query(
 			'UPDATE user_puzzles SET creator_name = $2 WHERE creator_id = $1',
-			[user_id, new_name]
+			[user_id, sanitizedName]
 		);
 
 		return result.rowCount > 0;
