@@ -109,4 +109,14 @@ export class UserPuzzleDatabaseService {
 
 		return result.rows.length > 0;
 	}
+
+	static async deleteUserPuzzleAdmin(id: number): Promise<boolean> {
+		const pool = getPool();
+		const result = await pool.query(
+			'UPDATE user_puzzles SET hidden = TRUE WHERE id = $1 AND hidden = FALSE RETURNING id',
+			[id]
+		);
+
+		return result.rows.length > 0;
+	}
 }

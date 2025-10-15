@@ -206,7 +206,7 @@ export const AdminPage: React.FC = () => {
         return;
       }
 
-      await UserPuzzleDatabaseService.deleteUserPuzzle(id, accessToken);
+      await UserPuzzleDatabaseService.deleteUserPuzzleAdmin(id, accessToken);
       setUserDeleteSuccessMessage(`User submitted puzzle with ID ${id} deleted successfully!`);
       setUserDeleteId('');
     } catch (error) {

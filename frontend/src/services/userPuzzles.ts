@@ -75,19 +75,25 @@ export class UserPuzzleDatabaseService {
     }
   }
 
-  //   static async deleteCryptogram(id: number, accessToken: string): Promise<void> {
-  //     const response = await fetch(`${USER_PUZZLE_API_BASE_URL}/cryptograms/${id}`, {
-  //       method: 'DELETE',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${accessToken}`
-  //       }
-  //     });
-  //     if (response.status === 404) {
-  //       throw new Error('Cryptogram not found');
-  //     }
-  //     if (!response.ok) {
-  //       throw new Error('Failed to delete cryptogram');
-  //     }
-  //   }
+  static async deleteUserPuzzleAdmin(id: number, accessToken: string): Promise<void> {
+    const response = await fetch(`${USER_PUZZLE_API_BASE_URL}/admin/puzzles/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    if (response.status === 404) {
+      throw new Error('User submitted puzzle not found');
+    }
+
+    if (response.status === 403) {
+      throw new Error('Insufficient permissions - admin access required');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to delete user submitted puzzle');
+    }
+  }
 }
