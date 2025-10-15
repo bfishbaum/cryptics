@@ -67,9 +67,26 @@ export class CrypticDatabaseService {
 
 	static async createCryptogram(cryptogram: CryptogramInput): Promise<Cryptogram> {
 		const pool = getPool();
+
+		// Get the latest puzzle's date
+		const latestResult = await pool.query(
+			'SELECT date_added FROM cryptograms ORDER BY date_added DESC LIMIT 1'
+		);
+
+		// Calculate the new date: one day after the latest puzzle
+		let newDate: Date;
+		if (latestResult.rows.length === 0) {
+			// No puzzles exist, use current date
+			newDate = new Date();
+		} else {
+			// Add one day to the latest puzzle's date
+			newDate = new Date(latestResult.rows[0].date_added);
+			newDate.setDate(newDate.getDate() + 1);
+		}
+
 		const result = await pool.query(
-			`INSERT INTO cryptograms (puzzle, solution, explanation, source, difficulty, date_added) 
-       VALUES ($1, $2, $3, $4, $5, $6) 
+			`INSERT INTO cryptograms (puzzle, solution, explanation, source, difficulty, date_added)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
 			[
 				cryptogram.puzzle,
@@ -77,7 +94,7 @@ export class CrypticDatabaseService {
 				cryptogram.explanation,
 				cryptogram.source,
 				cryptogram.difficulty,
-				cryptogram.date_added
+				newDate
 			]
 		);
 
