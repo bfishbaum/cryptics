@@ -456,6 +456,7 @@ body {
   color: #333;
   flex: 1;
   min-width: 150px;
+  text-align: left;
 }
 
 .archive-row-difficulty {

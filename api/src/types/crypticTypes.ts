@@ -6,6 +6,8 @@ export interface Cryptogram {
 	source: 'USER_SUBMITTED' | 'AI_GENERATED' | 'OFFICIAL';
 	difficulty: number;
 	date_added: Date;
+	creator_name?: string;
+	creator_id?: string;
 }
 
 export interface CryptogramInput {
