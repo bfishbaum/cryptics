@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import { UserService } from '../services/user';
+import { UserPuzzleDatabaseService } from '../services/userPuzzles';
 import type { UserProfileResponse } from '../types/profile';
 import { isUserPuzzleCompleted } from '../utils/puzzleProgress';
 
@@ -15,6 +16,7 @@ export const ProfilePage: React.FC = () => {
   const [displayNameError, setDisplayNameError] = useState<string | null>(null);
   const [displayNameSuccess, setDisplayNameSuccess] = useState<string | null>(null);
   const [isEditingDisplayName, setIsEditingDisplayName] = useState(false);
+  const [deletingPuzzleId, setDeletingPuzzleId] = useState<number | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -107,6 +109,30 @@ export const ProfilePage: React.FC = () => {
     setIsEditingDisplayName(true);
     setDisplayNameError(null);
     setDisplayNameSuccess(null);
+  };
+
+  const handleDeletePuzzle = async (puzzleId: number, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!window.confirm('Are you sure you want to delete this puzzle? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setDeletingPuzzleId(puzzleId);
+      const accessToken = await getAccessTokenSilently();
+      await UserPuzzleDatabaseService.deleteUserPuzzle(puzzleId, accessToken);
+
+      // Refresh profile to update puzzle list
+      const updatedProfile = await UserService.getProfile(accessToken);
+      setProfile(updatedProfile);
+    } catch (error) {
+      console.error('Error deleting puzzle:', error);
+      alert(error instanceof Error ? error.message : 'Failed to delete puzzle');
+    } finally {
+      setDeletingPuzzleId(null);
+    }
   };
 
   if (isLoading) {
@@ -328,29 +354,63 @@ export const ProfilePage: React.FC = () => {
         ) : (
           <div className="archive-list">
             {profile.puzzles.map((puzzle) => (
-              <Link
-                key={puzzle.id}
-                to={`/userpuzzle/${puzzle.id}`}
-                className="archive-row"
-              >
-                <div className="archive-row-content">
-                  <div className="archive-row-date">
-                    {formatDate(puzzle.date_added)}
+              <div key={puzzle.id} style={{ position: 'relative' }}>
+                <Link
+                  to={`/userpuzzle/${puzzle.id}`}
+                  className="archive-row"
+                  style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                >
+                  <div className="archive-row-content">
+                    <div className="archive-row-date">
+                      {formatDate(puzzle.date_added)}
+                    </div>
+                    <div className="archive-row-difficulty">
+                      Difficulty: {puzzle.difficulty}/5
+                    </div>
+                    <div className="archive-row-status">
+                      {isUserPuzzleCompleted(puzzle.id) && (
+                        <span className="completion-check">✓</span>
+                      )}
+                    </div>
                   </div>
-                  <div className="archive-row-difficulty">
-                    Difficulty: {puzzle.difficulty}/5
+                  <div className="archive-row-preview">
+                    {puzzle.puzzle.substring(0, 80)}
+                    {puzzle.puzzle.length > 80 ? '...' : ''}
                   </div>
-                  <div className="archive-row-status">
-                    {isUserPuzzleCompleted(puzzle.id) && (
-                      <span className="completion-check">✓</span>
-                    )}
-                  </div>
-                </div>
-                <div className="archive-row-preview">
-                  {puzzle.puzzle.substring(0, 80)}
-                  {puzzle.puzzle.length > 80 ? '...' : ''}
-                </div>
-              </Link>
+                </Link>
+                <button
+                  onClick={(e) => handleDeletePuzzle(puzzle.id, e)}
+                  disabled={deletingPuzzleId === puzzle.id}
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: '15px',
+                    transform: 'translateY(-50%)',
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    border: '2px solid #dc3545',
+                    borderRadius: '6px',
+                    padding: '8px 16px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: deletingPuzzleId === puzzle.id ? 'not-allowed' : 'pointer',
+                    opacity: deletingPuzzleId === puzzle.id ? 0.6 : 1,
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (deletingPuzzleId !== puzzle.id) {
+                      e.currentTarget.style.backgroundColor = '#c82333';
+                      e.currentTarget.style.borderColor = '#bd2130';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#dc3545';
+                    e.currentTarget.style.borderColor = '#dc3545';
+                  }}
+                >
+                  {deletingPuzzleId === puzzle.id ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
             ))}
           </div>
         )}

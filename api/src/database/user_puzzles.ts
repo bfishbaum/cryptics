@@ -48,7 +48,7 @@ export class UserPuzzleDatabaseService {
 	static async getAllUserPuzzlesByUser(user_id: string): Promise<Cryptogram[]> {
 		const pool = getPool();
 		const result = await pool.query(
-			'SELECT * FROM user_puzzles WHERE creator_id = $1 ORDER BY created_at DESC',
+			'SELECT * FROM user_puzzles WHERE creator_id = $1 AND hidden = FALSE ORDER BY created_at DESC',
 			[user_id]
 		);
 
