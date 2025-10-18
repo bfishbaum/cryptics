@@ -15,6 +15,7 @@ export interface Cryptogram {
   difficulty: number;
   date_added: Date;
   creator_name?: string; // For user-submitted puzzles
+  creator_id?: string; // For user-submitted puzzles
 }
 
 export interface CryptogramInput {

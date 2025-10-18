@@ -78,4 +78,37 @@ router.get('/profile', jwtCheck, extractUserId, async (req, res) => {
 	}
 });
 
+router.get('/profile/:userId', jwtCheck, async (req, res) => {
+	try {
+		const { userId } = req.params;
+
+		if (!userId) {
+			return res.status(400).json({ error: 'User ID is required' });
+		}
+
+		const existingUser = await UserDatabaseService.getUserById(userId);
+
+		if (!existingUser) {
+			return res.status(404).json({ error: 'User not found' });
+		}
+
+		const puzzles = await UserPuzzleDatabaseService.getPublicUserPuzzlesByUser(userId);
+
+		const profile: UserProfile = {
+			userId,
+			displayName: existingUser.display_name,
+			puzzles
+		};
+
+		return res.status(200).json(profile);
+	} catch (error) {
+		console.error('Error fetching user profile:', error);
+		return res.status(500).json({
+			error: 'Internal server error',
+			details: error instanceof Error ? error.message : String(error),
+			stack: error instanceof Error ? error.stack : undefined
+		});
+	}
+});
+
 export default router;

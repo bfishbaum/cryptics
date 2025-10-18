@@ -72,4 +72,44 @@ export class UserService {
 
     return displayName;
   }
+
+  static async getUserProfile(userId: string, accessToken: string): Promise<UserProfileResponse> {
+    const response = await fetch(buildUrl(`/api/users/profile/${userId}`), {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Accept': 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('User not found');
+      }
+      if (response.status === 401) {
+        throw new Error('Authentication required');
+      }
+      const errorBody = await response.json().catch(() => null);
+      const message = errorBody && typeof errorBody.message === 'string'
+        ? errorBody.message
+        : 'Failed to fetch user profile';
+      throw new Error(message);
+    }
+
+    const data = await response.json() as UserProfileApiResponse;
+
+    const { puzzles, ...rest } = data;
+
+    return {
+      userId: rest.userId ?? '',
+      displayName: rest.displayName ?? '',
+      puzzles: Array.isArray(puzzles)
+        ? puzzles.map((puzzle) => ({
+            ...puzzle,
+            date_added: new Date(puzzle.date_added)
+          }))
+        : []
+    };
+  }
 }

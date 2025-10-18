@@ -61,10 +61,23 @@ export const UserArchivePage: React.FC = () => {
                   key={cryptogram.id}
                   to={`/userpuzzle/${cryptogram.id}`}
                   className="archive-row"
+                  style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
                 >
                   <div className="archive-row-content">
                     <div className="archive-row-date">
-                      By: {cryptogram.creator_name || 'Anonymous'}
+                      By: {cryptogram.creator_id ? (
+                        <Link
+                          to={`/user/${cryptogram.creator_id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ color: '#007bff', textDecoration: 'none' }}
+                          onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                          onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                        >
+                          {cryptogram.creator_name || 'Anonymous'}
+                        </Link>
+                      ) : (
+                        cryptogram.creator_name || 'Anonymous'
+                      )}
                     </div>
                     <div className="archive-row-difficulty">
                       Difficulty: {cryptogram.difficulty}/5

@@ -13,6 +13,7 @@ import { SupportPage } from './pages/SupportPage';
 import { AboutPage } from './pages/AboutPage';
 import { AdminPage } from './pages/AdminPage';
 import { UserPuzzlePage } from './pages/UserPuzzlePage';
+import { UserPage } from './pages/UserPage';
 import { SharedPuzzlePage } from './pages/SharedPuzzlePage';
 import { LoginRedirectPage } from './pages/LoginRedirectPage';
 import './styles/globals.css';
@@ -48,6 +49,7 @@ function App() {
               <Route path="/shared-puzzle" element={<SharedPuzzlePage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/user/:userId" element={<UserPage />} />
               <Route path="/support" element={<SupportPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/admin" element={<AdminPage />} />

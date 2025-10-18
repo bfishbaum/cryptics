@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { CryptogramGame } from '../components/CryptogramGame';
 import { useUserPuzzle } from '../hooks/usePuzzles';
 import '../styles/CryptogramGame.css';
@@ -59,6 +59,22 @@ export const UserPuzzlePage: React.FC = () => {
         <h1 className="page-title">
           {id ? `Cryptic Crossword #${id}` : 'Latest Cryptic Crossword'}
         </h1>
+        {puzzleQuery.data.creator_name && (
+          <p style={{ textAlign: 'center', color: '#6c757d', marginTop: '-10px', marginBottom: '20px' }}>
+            By: {puzzleQuery.data.creator_id ? (
+              <Link
+                to={`/user/${puzzleQuery.data.creator_id}`}
+                style={{ color: '#007bff', textDecoration: 'none' }}
+                onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+              >
+                {puzzleQuery.data.creator_name}
+              </Link>
+            ) : (
+              puzzleQuery.data.creator_name
+            )}
+          </p>
+        )}
         <CryptogramGame cryptogram={puzzleQuery.data} puzzleType="user" />
       </div>
     </div>

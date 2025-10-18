@@ -58,6 +58,19 @@ export class UserPuzzleDatabaseService {
 		}));
 	}
 
+	static async getPublicUserPuzzlesByUser(user_id: string): Promise<Cryptogram[]> {
+		const pool = getPool();
+		const result = await pool.query(
+			'SELECT * FROM user_puzzles WHERE creator_id = $1 AND hidden = FALSE AND private = FALSE ORDER BY created_at DESC',
+			[user_id]
+		);
+
+		return result.rows.map((row: any) => ({
+			...row,
+			date_added: new Date(row.created_at)
+		}));
+	}
+
 
 	static async createUserPuzzle(cryptogram: CryptogramInput, user_id: string, display_name: string): Promise<Cryptogram> {
 		const pool = getPool();
