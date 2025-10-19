@@ -92,13 +92,15 @@ export const PrivacyPage: React.FC = () => {
           </section>
 
           <section style={{ marginBottom: '24px' }}>
-            <h2 style={{ fontSize: '24px', marginBottom: '12px' }}>User-Submitted Puzzles and Content Ownership</h2>
+            <h2 style={{ fontSize: '24px', marginBottom: '12px' }}>User-Submitted Puzzles and Content</h2>
             <p style={{ marginBottom: '12px' }}>
-              By submitting puzzles, solutions, explanations, or other content to the Service, you grant
-              Cryptic Clues a perpetual, worldwide, irrevocable, royalty-free, and fully transferable license
-              to use, host, reproduce, modify, adapt, publish, and distribute that content in any media. All
-              puzzles submitted through the Service become the property of Cryptic Clues, and we may use them
-              in any commercial or non-commercial manner without further notice or compensation to you.
+              When you submit puzzles, solutions, explanations, or other content to the Service, you grant 
+              Cryptic Clues a non-exclusive, worldwide,
+              royalty-free license to use, host, reproduce, modify, adapt, publish, and distribute that content
+              for the purpose of operating and improving the Service. This allows us to display your puzzles to
+              other users, make necessary technical modifications, and ensure the community can enjoy your
+              contributions. We respect your creative work and will credit you as the creator where your puzzles
+              are displayed.
             </p>
           </section>
 
